@@ -97,7 +97,6 @@ cd canedge-grafana-backend
 pip install -r requirements.txt
 tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
-
 ```
 
 - Verify that you see an `OK` when opening the endpoint (`http://[IP]:[port]`) in your browser
