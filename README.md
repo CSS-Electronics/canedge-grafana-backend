@@ -63,7 +63,7 @@ A local PC deployment is ideal for testing, as well as parsing data from local d
 - Open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
 ```
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
-cd json-dashboard-test
+cd canedge-grafana-backend
 pip install -r requirements.txt
 python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
 ```
@@ -93,7 +93,7 @@ An AWS EC2 instance is ideal for parsing data from AWS S3:
 sudo apt update
 sudo apt install python3 python3-pip tmux
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
-cd json-dashboard-test
+cd canedge-grafana-backend
 pip install -r requirements.txt
 tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080

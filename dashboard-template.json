@@ -1,0 +1,1038 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      },
+      {
+        "datasource": "SimpleJson",
+        "enable": true,
+        "iconColor": "dark-orange",
+        "name": "Session",
+        "query": "{\"annotation\": \"session\", \"device\": \"${DEVICE}\"}"
+      },
+      {
+        "datasource": "SimpleJson",
+        "enable": true,
+        "iconColor": "#ffce6c",
+        "name": "Split",
+        "query": "{\"annotation\": \"split\", \"device\": \"${DEVICE}\"}"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 11,
+  "iteration": 1646914653824,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 12,
+        "w": 15,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "maxDataPoints": 400,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "Variables",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"${ITF}\",\"chn\":\"${CHN}\",\"db\":\"${DB}\",\"signal\":\"${SIGNAL}\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "Position",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"(Latitude|Longitude)\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "Speed",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"(Speed)\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "DistanceTrip",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"(DistanceTrip|DistanceAccuracy)\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "Attitude",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"(Roll|Pitch|Heading)\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "Sattelites",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"Satellites\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "DistanceTotal",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"DistanceTotal\"}",
+          "type": "timeserie"
+        },
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource",
+            "uid": "u1TFGpL7z"
+          },
+          "hide": false,
+          "refId": "GeoFences",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"(Fence1|Fence2|Fence3|Fence4)\"}",
+          "type": "timeserie"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "${SIGNAL}",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "Variables"
+          }
+        }
+      ],
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "autoZoom": true,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "defaultLayer": "OpenStreetMap",
+      "description": "",
+      "gridPos": {
+        "h": 12,
+        "w": 9,
+        "x": 15,
+        "y": 0
+      },
+      "id": 3,
+      "lineColor": "#3d85c6",
+      "maxDataPoints": 400,
+      "pluginVersion": "8.4.1",
+      "pointColor": "#FF780A",
+      "scrollWheelZoom": false,
+      "showLayerChanger": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "title": "GPS Position",
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "Position"
+          }
+        }
+      ],
+      "type": "pr0ps-trackmap-panel"
+    },
+    {
+      "aliasColors": {
+        "2F6913DB:CAN:CH2:canmod-gps:Speed": "#3d85c6"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 0,
+        "y": 12
+      },
+      "hiddenSeries": false,
+      "id": 5,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "maxDataPoints": 400,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "2F6913DB:CAN:CH2:canmod-gps:SpeedAccuracy",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Speed (m/s)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "Speed"
+          }
+        }
+      ],
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "none",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {
+        "2F6913DB:CAN:CH2:canmod-gps:Speed": "blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
+        "y": 12
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "maxDataPoints": 400,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "2F6913DB:CAN:CH2:canmod-gps:SpeedAccuracy",
+          "yaxis": 2
+        },
+        {
+          "alias": "2F6913DB:CAN:CH2:canmod-gps:DistanceAccuracy",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Trip distance (m)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "DistanceTrip"
+          }
+        }
+      ],
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "none",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {
+        "2F6913DB:CAN:CH2:canmod-gps:Speed": "blue"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 10,
+        "y": 12
+      },
+      "hiddenSeries": false,
+      "id": 7,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "maxDataPoints": 400,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "2F6913DB:CAN:CH2:canmod-gps:SpeedAccuracy",
+          "yaxis": 2
+        },
+        {
+          "alias": "2F6913DB:CAN:CH2:canmod-gps:DistanceAccuracy",
+          "yaxis": 2
+        },
+        {
+          "alias": "2F6913DB:CAN:CH2:canmod-gps:Heading",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Attitude",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "Attitude"
+          }
+        }
+      ],
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "none",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#3d85c6",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 15,
+        "y": 12
+      },
+      "id": 8,
+      "maxDataPoints": 400,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "title": "#Satellites (avg)",
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "Sattelites"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#3d85c6",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 18,
+        "y": 12
+      },
+      "id": 9,
+      "maxDataPoints": 400,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "title": "Total distance (km)",
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "DistanceTotal"
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2F6913DB:CAN:CH2:canmod-gps:Fence1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "GF1"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2F6913DB:CAN:CH2:canmod-gps:Fence2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "GF2"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2F6913DB:CAN:CH2:canmod-gps:Fence3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "GF3"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "2F6913DB:CAN:CH2:canmod-gps:Fence4"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "GF4"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 21,
+        "y": 12
+      },
+      "id": 10,
+      "maxDataPoints": 400,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 4,
+          "refId": "A"
+        }
+      ],
+      "title": "Geofence status",
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "GeoFences"
+          }
+        }
+      ],
+      "type": "bargauge"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "2F6913DB",
+          "value": "2F6913DB"
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource",
+          "uid": "u1TFGpL7z"
+        },
+        "definition": "{\"search\":\"device\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "DEVICE",
+        "multi": false,
+        "name": "DEVICE",
+        "options": [],
+        "query": "{\"search\":\"device\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "canmod-gps",
+          "value": "canmod-gps"
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource",
+          "uid": "u1TFGpL7z"
+        },
+        "definition": "{\"search\":\"db\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "DB",
+        "multi": false,
+        "name": "DB",
+        "options": [],
+        "query": "{\"search\":\"db\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "CH2",
+          "value": "CH2"
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource",
+          "uid": "u1TFGpL7z"
+        },
+        "definition": "{\"search\":\"chn\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "CHN",
+        "multi": false,
+        "name": "CHN",
+        "options": [],
+        "query": "{\"search\":\"chn\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "CAN",
+          "value": "CAN"
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource",
+          "uid": "u1TFGpL7z"
+        },
+        "definition": "{\"search\":\"itf\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "ITF",
+        "multi": false,
+        "name": "ITF",
+        "options": [],
+        "query": "{\"search\":\"itf\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "AccelerationX",
+            "AccelerationY",
+            "AccelerationZ"
+          ],
+          "value": [
+            "AccelerationX",
+            "AccelerationY",
+            "AccelerationZ"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource",
+          "uid": "u1TFGpL7z"
+        },
+        "definition": "{\"search\":\"signal\", \"db\": \"${DB}\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "SIGNAL",
+        "multi": true,
+        "name": "SIGNAL",
+        "options": [],
+        "query": "{\"search\":\"signal\", \"db\": \"${DB}\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "2022-01-08T10:33:37.186Z",
+    "to": "2022-01-08T10:51:16.573Z"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "CANedge 'Dashboard Parser' Template",
+  "uid": "Vh5F6cY7z",
+  "version": 42,
+  "weekStart": ""
+}
