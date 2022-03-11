@@ -69,8 +69,6 @@ pip install -r requirements.txt
 python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
 ```
 
-##### Set up port forwarding for access via the internet
-
 - Set up [port forwarding](https://portforward.com/) on your WiFi router for port `8080`
 - Run the app again (you may need to allow access via your firewall)
 - Find your [public IP](https://www.whatismyip.com/) to get your endpoint as: `http://[IP]:[port]` (e.g. `http://5.105.117.49:8080/`)
@@ -194,5 +192,5 @@ Below are a list of pending items:
 - Optimize Flask/Waitress session management for stability
 - Improve performance for multiple DBC files
 - Update guide for EC2 service deployment for stability (instead of tmux)
-- Update guide for TLS-enabled EC2 deployment 
+- Update code/guide for TLS-enabled deployment 
 - Provide guidance on how to best scale the app for multiple front-end users 
