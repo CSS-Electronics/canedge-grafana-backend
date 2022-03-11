@@ -115,6 +115,12 @@ See also step 5 on how to deploy the app as a service for production.
 
 ### 3: Load your own log files & DBC files
 
+### Parse data from local disk 
+If you want to work with data from your local disk (e.g. a CANedge1 SD card), you can [install Grafana locally](https://grafana.com/docs/grafana/latest/installation/windows/) and simply use `http://localhost:8080` as your datasource URL (without any port forwarding). 
+
+Note that your data folder must be structured similarly to the sample data `LOG/` folder - i.e. your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure (similar to how they are structured on the CANedge SD card). 
+
+
 ### Parse data from S3
 
 The above examples parse sample data from local disk. To parse data from S3 (MinIO, AWS, ...), use below syntax to start the backend (use `python3` on EC2):
@@ -194,3 +200,4 @@ Below are a list of pending items:
 - Update guide for EC2 service deployment for stability (instead of tmux)
 - Update code/guide for TLS-enabled deployment 
 - Provide guidance on how to best scale the app for multiple front-end users 
+- Determine if using `Browser` in SimpleJSON datasource improves performance (requires TLS)
