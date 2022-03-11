@@ -104,7 +104,7 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 - Verify that your datasource is OK and that your imported dashboard panel displays your data
 - In the GUI console, press `Ctrl B` then `D` to de-attach from the session
 
-##### Managing your EC2
+##### Managing your EC2 tmux session
 
 Below commands are useful in managing your `tmux` session:
 
@@ -113,17 +113,17 @@ Below commands are useful in managing your `tmux` session:
 - `tmux attach`: Re-attach to session
 - `tmux kill-session`: Stop session
 
-##### Regarding EC2 costs
-You can find details on AWS EC2 pricing [here](https://aws.amazon.com/ec2/pricing/on-demand/). A t3.small instance typically costs ~0.02$/hour (~15-20$/month). We recommend that you monitor usage during your tests early on to ensure that no unexpected cost developments occur. Note also that you do not pay for the data transfer from S3 into EC2 if deployed within the same region. 
-
+See also step 4 on how to deploy the app as a service for production.
 
 -----
 
-### 3: Modify your deployment
+### 3: Load your own log files & DBC files
 
 ### Parse data from S3
 
-The above examples parse data from local disk. If you wish to parse data from an S3 server (MinIO, AWS, ...), you can use below syntax to start the backend (use `python3` on EC2):
+The above examples parse sample data from local disk. You can test with your own data locally by replacing the sample data (in the same structure).
+
+If you wish to parse data from an S3 server (MinIO, AWS, ...), you can use below syntax to start the backend (use `python3` on EC2):
 
 ```
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
@@ -136,7 +136,7 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance. 
 
 
-### Customize your Grafana dashboard
+### 4: Customize your Grafana dashboard
 
 The `dashboard-template.json` can be used to identify how to make queries, incl. below examples:
 
@@ -165,9 +165,37 @@ Similarly, Annotations can be used to display when a new log file 'session' or '
 
 ----
 
-## Pending tasks 
+### 5: Move to a production setup 
+
+#### Deploy your app as a service for production
+
+The above setup is suitable for development & testing. Once you're ready to deploy for production, you may prefer to set up a service. This ensures that your app automatically restarts after an instance reboot or a crash. To set it up as a service, follow the below steps:
+
+- Update the `ExecStart` line in the `canedge_grafana_backend.service` 'unit file' with your S3 details
+- Upload the modified file e.g. via Google Drive to get an URL
+- In your EC2 instance, use below commands to deploy the file
+
+```
+sudo wget [your_file_url]
+sudo cp canedge_grafana_backend.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl start canedge_grafana_backend
+sudo systemctl enable canedge_grafana_backend
+sudo journalctl -f -u canedge_grafana_backend
+```
+
+The service should now be deployed, which you can verify via the console output. If you need to make updates to your unit file, simply repeat the above. You can stop the service via `sudo systemctl stop [service]`.
+
+##### Regarding EC2 costs
+You can find details on AWS EC2 pricing [here](https://aws.amazon.com/ec2/pricing/on-demand/). A `t3.small` instance typically costs ~0.02$/hour (~15-20$/month). We recommend that you monitor usage during your tests early on to ensure that no unexpected cost developments occur. Note also that you do not pay for the data transfer from S3 into EC2 if deployed within the same region. 
+
+----
+
+### Pending tasks 
 Below are a list of pending items:
 
 - Optimize Flask/Waitress session management for stability
+- Improve performance for multiple DBC files
 - Update guide for EC2 service deployment for stability (instead of tmux)
 - Update guide for TLS-enabled EC2 deployment 
+- Provide guidance on how to best scale the app for multiple front-end users 
