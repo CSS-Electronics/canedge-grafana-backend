@@ -50,7 +50,7 @@ In this section we detail how to deploy the app on a PC or an AWS EC2 instance.
 
 Your dashboard is now ready once you replace the 'dummy URL' with a valid endpoint.
 
-<img src="https://canlogger1000.csselectronics.com/img/Grafana-SimpleJSON-datasource.jpg" width="679.455" height="226.477">
+<img src="https://canlogger1000.csselectronics.com/img/Grafana-SimpleJSON-datasource_v2.jpg" width="679.455" height="226.477">
 
  
 ### 2: Deploy the backend app 
