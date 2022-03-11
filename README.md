@@ -122,7 +122,7 @@ Note: If you simply wish to work with your local data on your own PC, you can [i
 
 ### Parse data from S3
 
-The above examples parse sample data from local disk. To parse data from S3 (MinIO, AWS, ...), use below syntax to start the backend (use `python3` on EC2):
+To parse data from S3 (MinIO, AWS, ...), add your DBC file(s) to the root of your S3 bucket. Next, use below syntax to start the backend (use `python3` on EC2):
 
 ```
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
@@ -131,8 +131,8 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 - AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
 - MinIO S3 endpoint example: `http://192.168.192.1:9000`
 
-### Add DBC files 
-All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance. 
+### Regarding DBC files 
+All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance.
 
 ----
 
