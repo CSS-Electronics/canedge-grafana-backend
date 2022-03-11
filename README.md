@@ -116,10 +116,9 @@ See also step 5 on how to deploy the app as a service for production.
 ### 3: Load your own log files & DBC files
 
 ### Parse data from local disk 
-If you want to work with data from your local disk (e.g. a CANedge1 SD card), you can [install Grafana locally](https://grafana.com/docs/grafana/latest/installation/windows/) and simply use `http://localhost:8080` as your datasource URL (without any port forwarding). 
+If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure.
 
-Note that your data folder must be structured similarly to the sample data `LOG/` folder - i.e. your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure (similar to how they are structured on the CANedge SD card). 
-
+Note that if you simply wish to work with your local data on your own PC, you can simply [install Grafana locally](https://grafana.com/docs/grafana/latest/installation/windows/) and use `http://localhost:8080` as your datasource URL (without port forwarding). 
 
 ### Parse data from S3
 
