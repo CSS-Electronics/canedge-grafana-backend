@@ -163,6 +163,11 @@ Similarly, Annotations can be used to display when a new log file 'session' or '
 
 <img src="https://canlogger1000.csselectronics.com/img/Grafana-Variables-Annotations.jpg" width="679.455" height="226.477">
 
+#### Regarding performance
+Using the 'zoom out' button repeatedly will currently generate a queue of requests, each of which will be processed by the backend. Until this is optimized, we recommend to make a single request a time - e.g. by using the time period selector instead of the 'zoom out' button. 
+
+Note also that the loading speed will depend heavily on the time period viewed (as the data underlying the period is processed in real-time).
+
 ----
 
 ### 5: Move to a production setup (EC2)
@@ -188,6 +193,9 @@ The service should now be deployed, which you can verify via the console output.
 
 ##### Regarding EC2 costs
 You can find details on AWS EC2 pricing [here](https://aws.amazon.com/ec2/pricing/on-demand/). A `t3.small` instance typically costs ~0.02$/hour (~15-20$/month). We recommend that you monitor usage during your tests early on to ensure that no unexpected cost developments occur. Note also that you do not pay for the data transfer from S3 into EC2 if deployed within the same region. 
+
+#### Regarding public IP 
+Note that rebooting your EC2 instance will imply that your endpoint IP is changed - and thus you'll need to update your datasource. There are methods to set a fixed IP, though not in scope of this README. 
 
 ----
 
