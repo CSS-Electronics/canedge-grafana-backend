@@ -115,9 +115,14 @@ See also step 5 on how to deploy the app as a service for production.
 
 ### 3: Load your own log files & DBC files
 
+### Parse data from local disk 
+If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure.
+
+Note: If you simply wish to work with your local data on your own PC, you can [install Grafana locally](https://grafana.com/docs/grafana/latest/installation/windows/) and use `http://localhost:8080` as your datasource URL.
+
 ### Parse data from S3
 
-The above examples parse sample data from local disk. To parse data from S3 (MinIO, AWS, ...), use below syntax to start the backend (use `python3` on EC2):
+To parse data from S3 (MinIO, AWS, ...), add your DBC file(s) to the root of your S3 bucket. Next, use below syntax to start the backend (use `python3` on EC2):
 
 ```
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
@@ -126,8 +131,8 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 - AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
 - MinIO S3 endpoint example: `http://192.168.192.1:9000`
 
-### Add DBC files 
-All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance. 
+### Regarding DBC files 
+All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance.
 
 ----
 
@@ -194,3 +199,4 @@ Below are a list of pending items:
 - Update guide for EC2 service deployment for stability (instead of tmux)
 - Update code/guide for TLS-enabled deployment 
 - Provide guidance on how to best scale the app for multiple front-end users 
+- Determine if using `Browser` in SimpleJSON datasource improves performance (requires TLS)
