@@ -60,14 +60,14 @@ Below we explain how to set up the backend app on your PC or an [AWS EC2](https:
 A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3:
 
 - Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
-- Open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
+- Open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s), enter below and check that `http://localhost:8080` returns `OK`
+
 ```
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
 cd canedge-grafana-backend
 pip install -r requirements.txt
 python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
 ```
-- Verify that you see an `OK` when opening `http://localhost:8080` in your browser
 
 ##### Set up port forwarding for access via the internet
 
@@ -75,8 +75,7 @@ python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
 - Run the app again (you may need to allow access via your firewall)
 - Find your [public IP](https://www.whatismyip.com/) to get your endpoint as: `http://[IP]:[port]` (e.g. `http://5.105.117.49:8080/`)
 - Verify that you see an `OK` when opening the endpoint in your browser
-- In Grafana, update your dummy URL with the endpoint and click `Save & test`
-- Verify that your datasource is OK and that your imported panel displays the sample data
+- In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
 
 
 #### Example B: Deploy the backend app on AWS EC2
@@ -86,7 +85,7 @@ An AWS EC2 instance is ideal for parsing data from AWS S3:
 - Select `Ubuntu Server 20.04 LTS (HVM), SSD Volume Type`, `t3.small` and proceed
 - In `Step 6`, click `Add Rule/Custom TCP Rule` and set `Port Range` to `8080`
 - Launch the instance, then create & store your credentials (we will not use them for now) 
-- Wait a few minutes, then enter your instance and note your `Public IPv4 address`
+- Wait a few minutes, then click on your instance and note your `Public IPv4 address`
 - Click `Connect/Connect` to enter the GUI console, then enter the following:
 
 ```
@@ -100,20 +99,19 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
 - Verify that you see an `OK` when opening the endpoint (`http://[IP]:[port]`) in your browser
-- In Grafana, update your JSON URL with the endpoint and click `Save & test`
-- Verify that your datasource is OK and that your imported dashboard panel displays your data
-- In the GUI console, press `Ctrl B` then `D` to de-attach from the session
+- In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
+- In the GUI console, press `ctrl + B` then `D` to de-attach from the session
 
 ##### Managing your EC2 tmux session
 
 Below commands are useful in managing your `tmux` session:
 
-- `tmux`: Start session
+- `tmux`: Start a session
 - `tmux ls`: List sessions 
 - `tmux attach`: Re-attach to session
 - `tmux kill-session`: Stop session
 
-See also step 4 on how to deploy the app as a service for production.
+See also step 5 on how to deploy the app as a service for production.
 
 -----
 
@@ -121,9 +119,7 @@ See also step 4 on how to deploy the app as a service for production.
 
 ### Parse data from S3
 
-The above examples parse sample data from local disk. You can test with your own data locally by replacing the sample data (in the same structure).
-
-If you wish to parse data from an S3 server (MinIO, AWS, ...), you can use below syntax to start the backend (use `python3` on EC2):
+The above examples parse sample data from local disk. To parse data from S3 (MinIO, AWS, ...), use below syntax to start the backend (use `python3` on EC2):
 
 ```
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
@@ -135,6 +131,7 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 ### Add DBC files 
 All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance. 
 
+----
 
 ### 4: Customize your Grafana dashboard
 
@@ -165,7 +162,7 @@ Similarly, Annotations can be used to display when a new log file 'session' or '
 
 ----
 
-### 5: Move to a production setup 
+### 5: Move to a production setup (EC2)
 
 #### Deploy your app as a service for production
 
