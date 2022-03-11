@@ -172,7 +172,7 @@ Similarly, Annotations can be used to display when a new log file 'session' or '
 The above setup is suitable for development & testing. Once you're ready to deploy for production, you may prefer to set up a service. This ensures that your app automatically restarts after an instance reboot or a crash. To set it up as a service, follow the below steps:
 
 - Update the `ExecStart` line in the `canedge_grafana_backend.service` 'unit file' with your S3 details
-- Upload the modified file e.g. via Google Drive to get an URL
+- Upload the modified file to get an URL
 - In your EC2 instance, use below commands to deploy the file
 
 ```
