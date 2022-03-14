@@ -42,7 +42,9 @@ Note: We strongly recommend to test the local deployment with our sample data as
 
 ### 1: Deploy the integration locally on your PC
 
-A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3:
+A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3.
+
+- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local.mp4)
 
 #### Set up Grafana locally
 - Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
@@ -53,8 +55,7 @@ A local PC deployment is ideal for testing, as well as parsing data from local d
 - In `Dashboards/Browse` click `Import` and copy the contents of `dashboard-template.json` from this repo 
 
 #### Deploy the backend app locally
-- Create a new folder on your PC, enter it and open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s)
-- Enter below and check that `http://localhost:8080` returns `OK` in your browser
+- Create a new folder on your PC, enter it, open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
 
 ```
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
@@ -69,16 +70,13 @@ For details on port forwarding, see the 'production' section further below.
 
 
 ### 2: Deploy the integration on AWS EC2 & Grafana Cloud
-An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data from AWS S3:
+An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data from AWS S3.
+
+- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-aws-ec2-cloud.mp4)
 
 #### Set up Grafana Cloud
 - [Set up](https://grafana.com/auth/sign-up/create-user) a free Grafana Cloud account and log in
 - Follow the steps listed for the local deployment (plugins, datasource, dashboard import)
-
-Your dashboard is now ready once you replace the 'dummy URL' with a valid endpoint.
-
-<img src="https://canlogger1000.csselectronics.com/img/Grafana-SimpleJSON-datasource_v2.jpg" width="679.455" height="226.477">
-
 
 #### Deploy the backend app on AWS EC2 
 
@@ -99,8 +97,10 @@ tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
-- In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
+- In Grafana, replace your datasource URL with the endpoint and click `Save & test` 
 - In the GUI console, press `ctrl + B` then `D` to de-attach from the session
+
+You should now see the sample data visualized in your imported dashboard. 
 
 See also step 5 on how to deploy the app as a service for production.
 
@@ -109,10 +109,10 @@ See also step 5 on how to deploy the app as a service for production.
 
 ### 3: Load your own log files & DBC files
 
-### Parse data from local disk 
+#### Parse data from local disk 
 If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure.
 
-### Parse data from S3
+#### Parse data from S3
 
 To parse data from S3 (MinIO, AWS, ...), add your DBC file(s) to the root of your S3 bucket. Next, use below syntax to start the backend (use `python3` on EC2):
 
@@ -123,7 +123,7 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 - AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
 - MinIO S3 endpoint example: `http://192.168.192.1:9000`
 
-### Regarding DBC files 
+#### Regarding DBC files 
 All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance.
 
 ----
