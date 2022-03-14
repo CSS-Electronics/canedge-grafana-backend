@@ -97,7 +97,7 @@ tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
-- In Grafana, replace your datasource URL with the endpoint and click `Save & test` 
+- In Grafana, replace your datasource URL with the `http://[IP]:[port]` endpoint and click `Save & test` 
 - In the GUI console, press `ctrl + B` then `D` to de-attach from the session
 
 You should now see the sample data visualized in your imported dashboard. 
