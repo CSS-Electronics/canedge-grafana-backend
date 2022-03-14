@@ -1031,8 +1031,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "CANedge 'Dashboard Parser' Template",
-  "uid": "Vh5F6cY7z",
+  "title": "CANedge Grafana Backend - Template",
+  "uid": "Vh5F6cY7k",
   "version": 42,
   "weekStart": ""
 }
