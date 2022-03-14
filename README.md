@@ -16,6 +16,8 @@ The [CANedge Grafana Backend](https://github.com/CSS-Electronics/canedge-grafana
 
 In contrast, the [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) integration requires that you process relevant data in advance (e.g. periodically or on-file-upload) and write the decoded data to a database (e.g. InfluxDB). It is ideal if the dashboard loading speed is critical - but with the downside that large amounts of data is processed & stored (at a cost) without being used.
 
+For details incl. 'pros & cons', see our [intro to telematics dashboards](https://www.csselectronics.com/pages/telematics-dashboard-open-source).
+
 -----
 
 ## Features
@@ -36,31 +38,23 @@ In contrast, the [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/ca
 ## Installation
 In this section we detail how to deploy the app on a PC or an AWS EC2 instance. 
 
-- Note: Follow the guide using our `LOG/` sample data before using your own data
-- Note: We use port `8080` for illustration (another port can be used)
+Note: We strongly recommend to test the local deployment with our sample data as the first step.
 
+### 1: Deploy the integration locally on your PC
 
-
-### 1: Set up Grafana Cloud
-- [Set up](https://grafana.com/auth/sign-up/create-user) a free Grafana Cloud account and log in
-- In `Configuration/Plugins` install `SimpleJSON` and `TrackMap`, then login again 
-- In `Configuration/DataSources` select `Add datasource` and `SimpleJSON`
-- Enter a dummy URL for now, `http://5.105.117.49:8080/`, hit `Save & test` and verify that it fails 
-- In `Dashboards/Browse` click `Import`, then load the `dashboard-template.json` from this repo 
-
-Your dashboard is now ready once you replace the 'dummy URL' with a valid endpoint.
-
-<img src="https://canlogger1000.csselectronics.com/img/Grafana-SimpleJSON-datasource_v2.jpg" width="679.455" height="226.477">
-
- 
-### 2: Deploy the backend app 
-Below we explain how to set up the backend app on your PC or an [AWS EC2](https://aws.amazon.com/ec2/) instance.
-
-#### Example A: Deploy the backend app on your PC 
 A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3:
 
+#### Set up Grafana locally
 - Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
-- Open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s), enter below and check that `http://localhost:8080` returns `OK`
+- [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
+- In `Configuration/Plugins` install `SimpleJSON` and `TrackMap`
+- In `Configuration/DataSources` select `Add datasource` and `SimpleJSON`
+- Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it fails
+- In `Dashboards/Browse` click `Import` and copy the contents of `dashboard-template.json` from this repo 
+
+#### Deploy the backend app locally
+- Create a new folder on your PC, enter it and open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s)
+- Enter below and check that `http://localhost:8080` returns `OK` in your browser
 
 ```
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
@@ -69,15 +63,24 @@ pip install -r requirements.txt
 python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
 ```
 
-- Set up [port forwarding](https://portforward.com/) on your WiFi router for port `8080`
-- Run the app again (you may need to allow access via your firewall)
-- Find your [public IP](https://www.whatismyip.com/) to get your endpoint as: `http://[IP]:[port]` (e.g. `http://5.105.117.49:8080/`)
-- Verify that you see an `OK` when opening the endpoint in your browser
-- In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
+You should now see the sample data visualized when you open the imported dashboard in Grafana.
+
+For details on port forwarding, see the 'production' section further below.
 
 
-#### Example B: Deploy the backend app on AWS EC2
-An AWS EC2 instance is ideal for parsing data from AWS S3:
+### 2: Deploy the integration on AWS EC2 & Grafana Cloud
+An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data from AWS S3:
+
+#### Set up Grafana Cloud
+- [Set up](https://grafana.com/auth/sign-up/create-user) a free Grafana Cloud account and log in
+- Follow the steps listed for the local deployment (plugins, datasource, dashboard import)
+
+Your dashboard is now ready once you replace the 'dummy URL' with a valid endpoint.
+
+<img src="https://canlogger1000.csselectronics.com/img/Grafana-SimpleJSON-datasource_v2.jpg" width="679.455" height="226.477">
+
+
+#### Deploy the backend app on AWS EC2 
 
 - Login to AWS, search for `EC2/Instances` and click `Launch instances`
 - Select `Ubuntu Server 20.04 LTS (HVM), SSD Volume Type`, `t3.small` and proceed
@@ -96,20 +99,11 @@ tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
-- Verify that you see an `OK` when opening the endpoint (`http://[IP]:[port]`) in your browser
 - In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
 - In the GUI console, press `ctrl + B` then `D` to de-attach from the session
 
-##### Managing your EC2 tmux session
-
-Below commands are useful in managing your `tmux` session:
-
-- `tmux`: Start a session
-- `tmux ls`: List sessions 
-- `tmux attach`: Re-attach to session
-- `tmux kill-session`: Stop session
-
 See also step 5 on how to deploy the app as a service for production.
+
 
 -----
 
@@ -117,8 +111,6 @@ See also step 5 on how to deploy the app as a service for production.
 
 ### Parse data from local disk 
 If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure.
-
-Note: If you simply wish to work with your local data on your own PC, you can [install Grafana locally](https://grafana.com/docs/grafana/latest/installation/windows/) and use `http://localhost:8080` as your datasource URL.
 
 ### Parse data from S3
 
@@ -172,7 +164,16 @@ Note also that the loading speed will depend heavily on the time period viewed (
 
 ### 5: Move to a production setup (EC2)
 
-#### Deploy your app as a service for production
+##### Managing your EC2 tmux session
+
+Below commands are useful in managing your `tmux` session while you're still testing your deployment.
+
+- `tmux`: Start a session
+- `tmux ls`: List sessions 
+- `tmux attach`: Re-attach to session
+- `tmux kill-session`: Stop session
+
+#### Deploy your app as an EC2 service for production
 
 The above setup is suitable for development & testing. Once you're ready to deploy for production, you may prefer to set up a service. This ensures that your app automatically restarts after an instance reboot or a crash. To set it up as a service, follow the below steps:
 
@@ -191,11 +192,22 @@ sudo journalctl -f -u canedge_grafana_backend
 
 The service should now be deployed, which you can verify via the console output. If you need to make updates to your unit file, simply repeat the above. You can stop the service via `sudo systemctl stop [service]`.
 
-##### Regarding EC2 costs
+#### Regarding EC2 costs
 You can find details on AWS EC2 pricing [here](https://aws.amazon.com/ec2/pricing/on-demand/). A `t3.small` instance typically costs ~0.02$/hour (~15-20$/month). We recommend that you monitor usage during your tests early on to ensure that no unexpected cost developments occur. Note also that you do not pay for the data transfer from S3 into EC2 if deployed within the same region. 
 
-#### Regarding public IP 
+#### Regarding public EC2 IP 
 Note that rebooting your EC2 instance will imply that your endpoint IP is changed - and thus you'll need to update your datasource. There are methods to set a fixed IP, though not in scope of this README. 
+
+
+#### Port forwarding a local deployment
+
+If you want to access the data remotely, you can set up port forwarding. Below we outline how to port forward the backend app for use as a datasource in Grafana Cloud - but you could of course also directly port forward your local Grafana dashboard directly via port `3000`. 
+
+- Set up [port forwarding](https://portforward.com/) on your WiFi router for port `8080`
+- Run the app again (you may need to allow access via your firewall)
+- Find your [public IP](https://www.whatismyip.com/) to get your endpoint as: `http://[IP]:[port]` (e.g. `http://5.105.117.49:8080/`)
+- Verify that you see an `OK` when opening the endpoint in your browser
+- In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
 
 ----
 
