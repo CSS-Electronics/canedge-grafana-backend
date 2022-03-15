@@ -44,7 +44,7 @@ Note: We strongly recommend to test the local deployment with our sample data as
 
 A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3.
 
-- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local.mp4)
+- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local_v2.mp4)
 
 #### Set up Grafana locally
 - [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
