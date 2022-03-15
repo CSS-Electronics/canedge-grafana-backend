@@ -14,7 +14,7 @@ We provide two options for integrating your CANedge data with Grafana dashboards
 
 The [CANedge Grafana Backend](https://github.com/CSS-Electronics/canedge-grafana-backend) app only processes data 'when needed' by an end user - and requires no database. It is ideal when you have large amounts of data - as you only process the data you need to visualize. 
 
-In contrast, the [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) integration requires that you process relevant data in advance (e.g. periodically or on-file-upload) and write the decoded data to a database (e.g. InfluxDB). It is ideal if the dashboard loading speed is critical - but with the downside that large amounts of data is processed & stored (at a cost) without being used.
+In contrast, the [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) requires that you process relevant data in advance (e.g. periodically or on-file-upload) and write the decoded data to a database. It is ideal if the dashboard loading speed is critical - but with the downside that large amounts of data is processed & stored (at a cost) without being used.
 
 For details incl. 'pros & cons', see our [intro to telematics dashboards](https://www.csselectronics.com/pages/telematics-dashboard-open-source).
 
@@ -47,7 +47,6 @@ A local PC deployment is ideal for testing, as well as parsing data from local d
 - [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local.mp4)
 
 #### Set up Grafana locally
-- Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
 - [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
 - In `Configuration/Plugins` install `SimpleJSON` and `TrackMap`
 - In `Configuration/DataSources` select `Add datasource` and `SimpleJSON`
@@ -55,11 +54,11 @@ A local PC deployment is ideal for testing, as well as parsing data from local d
 - In `Dashboards/Browse` click `Import` and copy the contents of `dashboard-template.json` from this repo 
 
 #### Deploy the backend app locally
-- Create a new folder on your PC, enter it, open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
+- Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
+- Download this project as a zip via the green button and unzip it 
+- Open the folder with the `requirements.txt` file, open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
 
 ```
-git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
-cd canedge-grafana-backend
 pip install -r requirements.txt
 python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
 ```
@@ -158,7 +157,7 @@ Similarly, Annotations can be used to display when a new log file 'session' or '
 #### Regarding performance
 Using the 'zoom out' button repeatedly will currently generate a queue of requests, each of which will be processed by the backend. Until this is optimized, we recommend to make a single request a time - e.g. by using the time period selector instead of the 'zoom out' button. 
 
-Note also that the loading speed will depend heavily on the time period viewed (as the data underlying the period is processed in real-time).
+Also, loading speed increases when displaying long time periods (as the data for the period is processed in real-time).
 
 ----
 
