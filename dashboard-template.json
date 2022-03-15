@@ -85,9 +85,8 @@
       "targets": [
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
-          },
+            "type": "grafana-simple-json-datasource"
+		},
           "hide": false,
           "refId": "Variables",
           "target": "{\"device\":\"${DEVICE}\",\"itf\":\"${ITF}\",\"chn\":\"${CHN}\",\"db\":\"${DB}\",\"signal\":\"${SIGNAL}\"}",
@@ -95,8 +94,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
+            "type": "grafana-simple-json-datasource"
           },
           "hide": false,
           "refId": "Position",
@@ -105,8 +103,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
+            "type": "grafana-simple-json-datasource"
           },
           "hide": false,
           "refId": "Speed",
@@ -115,9 +112,8 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
-          },
+            "type": "grafana-simple-json-datasource"
+		},
           "hide": false,
           "refId": "DistanceTrip",
           "target": "{\"device\":\"${DEVICE}\",\"itf\":\"CAN\",\"chn\":\"CH2\",\"db\":\"canmod-gps\",\"signal\":\"(DistanceTrip|DistanceAccuracy)\"}",
@@ -125,8 +121,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
+            "type": "grafana-simple-json-datasource"
           },
           "hide": false,
           "refId": "Attitude",
@@ -135,8 +130,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
+            "type": "grafana-simple-json-datasource"
           },
           "hide": false,
           "refId": "Sattelites",
@@ -145,8 +139,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
+            "type": "grafana-simple-json-datasource"
           },
           "hide": false,
           "refId": "DistanceTotal",
@@ -155,8 +148,7 @@
         },
         {
           "datasource": {
-            "type": "grafana-simple-json-datasource",
-            "uid": "u1TFGpL7z"
+            "type": "grafana-simple-json-datasource"
           },
           "hide": false,
           "refId": "GeoFences",
@@ -902,8 +894,7 @@
           "value": "2F6913DB"
         },
         "datasource": {
-          "type": "grafana-simple-json-datasource",
-          "uid": "u1TFGpL7z"
+          "type": "grafana-simple-json-datasource"
         },
         "definition": "{\"search\":\"device\"}",
         "hide": 0,
@@ -926,8 +917,7 @@
           "value": "canmod-gps"
         },
         "datasource": {
-          "type": "grafana-simple-json-datasource",
-          "uid": "u1TFGpL7z"
+          "type": "grafana-simple-json-datasource"
         },
         "definition": "{\"search\":\"db\"}",
         "hide": 0,
@@ -950,8 +940,7 @@
           "value": "CH2"
         },
         "datasource": {
-          "type": "grafana-simple-json-datasource",
-          "uid": "u1TFGpL7z"
+          "type": "grafana-simple-json-datasource"
         },
         "definition": "{\"search\":\"chn\"}",
         "hide": 0,
@@ -974,8 +963,7 @@
           "value": "CAN"
         },
         "datasource": {
-          "type": "grafana-simple-json-datasource",
-          "uid": "u1TFGpL7z"
+          "type": "grafana-simple-json-datasource"
         },
         "definition": "{\"search\":\"itf\"}",
         "hide": 0,
@@ -1006,8 +994,7 @@
           ]
         },
         "datasource": {
-          "type": "grafana-simple-json-datasource",
-          "uid": "u1TFGpL7z"
+          "type": "grafana-simple-json-datasource"
         },
         "definition": "{\"search\":\"signal\", \"db\": \"${DB}\"}",
         "hide": 0,
@@ -1032,7 +1019,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "CANedge Grafana Backend - Template",
-  "uid": "Vh5F6cY7k",
+  "uid": "u1TFGpL7z",
   "version": 42,
   "weekStart": ""
 }
