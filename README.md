@@ -14,7 +14,7 @@ We provide two options for integrating your CANedge data with Grafana dashboards
 
 The [CANedge Grafana Backend](https://github.com/CSS-Electronics/canedge-grafana-backend) app only processes data 'when needed' by an end user - and requires no database. It is ideal when you have large amounts of data - as you only process the data you need to visualize. 
 
-The [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) processes data in advance (e.g. periodically or on-file-upload) and writes the decoded data to a database. It is ideal if dashboard loading speed is critical - but with the downside that data is processed/stored even if it is not used.
+The [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) processes data in advance (e.g. periodically or on-file-upload) and writes it to a database. It is ideal if dashboard loading speed is critical - but with the downside that data is processed & stored even if it is not used.
 
 For details incl. 'pros & cons', see our [intro to telematics dashboards](https://www.csselectronics.com/pages/telematics-dashboard-open-source).
 
@@ -74,7 +74,7 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 
 You should now see the sample data visualized in Grafana. 
 
-If you aim to work with CANedge2 data from AWS S3, go to step 2 - otherwise go to step 3.
+**Next:** If you aim to work with CANedge2 data from AWS S3, go to step 2 - otherwise go to step 3.
 
 ----
 
@@ -108,30 +108,31 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 
 You should now see the sample data visualized in your imported dashboard. In the AWS EC2 console you can press `ctrl + B` then `D` to de-attach from the session, allowing it to run even when you close the GUI console.
 
-See also step 3 on loading your AWS S3 data and step 5 on deploying the app as a service for production.
+**Next:** See step 3 on loading your AWS S3 data and step 5 on deploying the app as a service for production.
 
 
 -----
 
 ### 3: Load your own data & DBC files 
-Below we outline how to load your own data & DBC files. Note that you'll need to reactivate your virtual environment when re-starting the app (Windows: `env\Scripts\activate`, Linux: `source env/bin/activate`)
+Below we outline how to load your own data & DBC files. 
+
+Note: To activate your virtual environment use `env\Scripts\activate` (Linux: `source env/bin/activate`)
 
 #### Load from local disk 
 - Replace the sample `LOG/` folder with your own `LOG/` folder (or add an absolute path)
-- Verify that your data is structured as on the CANedge SD card (`[device_id]/[session]/[split].MF4`)
+- Verify that your data is structured as on the CANedge SD card i.e. `[device_id]/[session]/[split].MF4`
 - Add your DBC file(s) to the root of the folder
-- Start the app again and update your dashboard 
+- Verify that your venv is active and start the app  
 
 #### Load from S3
 - Add your DBC file(s) to the root of your S3 bucket 
-- Start the app with below syntax (use `python3` on Linux/EC2)
+- Verify that your venv is active and start the app with below syntax (use `python3` on Linux/EC2)
 
 ```
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
 ```
 
-- AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
-- MinIO S3 endpoint example: `http://192.168.192.1:9000`
+AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com` | MinIO S3 endpoint example: `http://192.168.192.1:9000`
 
 #### Regarding DBC files 
 If you need multiple DBC files, consider merging & trimming these for performance.
