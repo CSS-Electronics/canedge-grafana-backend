@@ -18,9 +18,10 @@ from canmatrix.formats import dbc
 @click.option('--s3_sk', required=False, envvar='CANEDGE_S3_SK', type=str, help='S3 secret key')
 @click.option('--s3_bucket', required=False, envvar='CANEDGE_S3_BUCKET', type=str, help='S3 bucket name')
 @click.option('--s3_cert', required=False, envvar='CANEDGE_S3_CERT', type=click.Path(), help='S3 cert path')
-def main(data_url, port, s3_ak, s3_sk, s3_bucket, s3_cert):
+@click.option('--debug/--no-debug', required=False, default=False, help='Backend debug')
+def main(data_url, port, s3_ak, s3_sk, s3_bucket, s3_cert, debug):
     """
-    CANedge datasource server. Provide a URL pointing to a CANedge data root.
+    CANedge Grafana Datasource. Provide a URL pointing to a CANedge data root.
 
     Examples
 
@@ -43,6 +44,7 @@ def main(data_url, port, s3_ak, s3_sk, s3_bucket, s3_cert):
         http://s3.eu-central-1.amazonaws.com
 
         http://192.168.0.100
+
         http://192.168.0.100:5000
 
     Scheme: HTTPS (S3):
@@ -95,9 +97,12 @@ def main(data_url, port, s3_ak, s3_sk, s3_bucket, s3_cert):
             db = can_decoder.load_dbc(fp)
             dbs[db_name] = {"db": db, "signals": db.signals()}
 
+    if debug:
+        print("DEBUG MODE")
+    print(f"Mount path: {data_url}")
     print(f"Loaded DBs: {', '.join(dbs.keys())}")
 
-    start_server(fs, dbs, port)
+    start_server(fs, dbs, port, debug)
 
 if __name__ == '__main__':
     main()

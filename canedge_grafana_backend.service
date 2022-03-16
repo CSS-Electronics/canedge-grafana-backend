@@ -1,5 +1,5 @@
 [Unit]
-Description=CANedge Grafana Backend service
+Description=CANedge Grafana Backend service v2
 After=network.target
 StartLimitIntervalSec=0
 
@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=ubuntu
-ExecStart=/usr/bin/python3 -u /home/ubuntu/canedge-grafana-backend/canedge_datasource_cli.py file:////home/ubuntu/canedge-grafana-backend/LOG --port 8080
+ExecStart=/home/ubuntu/canedge-grafana-backend/env/bin/python3 -u /home/ubuntu/canedge-grafana-backend/canedge_datasource_cli.py file:////home/ubuntu/canedge-grafana-backend/LOG --port 8080
 
 [Install]
 WantedBy=multi-user.target

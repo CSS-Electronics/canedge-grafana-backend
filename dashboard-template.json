@@ -17,14 +17,12 @@
         "type": "dashboard"
       },
       {
-        "datasource": "SimpleJson",
         "enable": true,
         "iconColor": "dark-orange",
         "name": "Session",
         "query": "{\"annotation\": \"session\", \"device\": \"${DEVICE}\"}"
       },
       {
-        "datasource": "SimpleJson",
         "enable": true,
         "iconColor": "#ffce6c",
         "name": "Split",

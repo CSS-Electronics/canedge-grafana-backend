@@ -57,12 +57,13 @@ def table_fs(fs, device, start_date: datetime, stop_date: datetime, max_data_poi
         fw_rev = meta_data.get("HDComment.Device Information.firmware version", {}).get("value_raw")
         storage_free = meta_data.get("HDComment.Device Information.storage free", {}).get("value_raw")
         storage_total = meta_data.get("HDComment.Device Information.storage total", {}).get("value_raw")
+        comment = meta_data.get("HDComment.Device Information.File Information.comment", {}).get("value_raw").strip()
 
         storage_mb = ""
         if storage_free is not None and storage_total is not None:
             storage_mb = f"{int(storage_total)-int(storage_free)>>10}/{int(storage_total)>>10}"
 
-        rows.append([start_epoch_ms, session, split, size_mb, config_crc, hw_rev, fw_rev, storage_mb, log_file])
+        rows.append([start_epoch_ms, device, session, split, size_mb, config_crc, hw_rev, fw_rev, storage_mb, log_file, comment])
 
         # {"type": "info", "device":"79A2DD1A"}
 
@@ -74,6 +75,7 @@ def table_fs(fs, device, start_date: datetime, stop_date: datetime, max_data_poi
                 "type": "table",
                 "columns": [
                     {"text": "TIME", "type": "time"},
+                    {"text": "DEVICE", "type": "string"},
                     {"text": "SESSION", "type": "string"},
                     {"text": "SPLIT", "type": "string"},
                     {"text": "SIZE [MB]", "type": "string"},
@@ -82,6 +84,7 @@ def table_fs(fs, device, start_date: datetime, stop_date: datetime, max_data_poi
                     {"text": "FW", "type": "string"},
                     {"text": "STORAGE [MB]", "type": "string"},
                     {"text": "NAME", "type": "string"},
+                    {"text": "META", "type": "string"},
                 ],
                 "rows": rows
             }

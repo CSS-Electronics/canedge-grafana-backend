@@ -40,42 +40,49 @@ In this section we detail how to deploy the app on a PC or an AWS EC2 instance.
 
 Note: We strongly recommend to test the local deployment with our sample data as the first step.
 
+Once you've made that work, you can start the backend with your own data/DBC files as per step 3.
+
 ### 1: Deploy the integration locally on your PC
 
 A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3.
 
 - [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local_v2.mp4)
 
-#### Set up Grafana locally
-- [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
-- In `Configuration/Plugins` install `SimpleJSON` and `TrackMap`
-- In `Configuration/DataSources` select `Add datasource` and `SimpleJSON`
-- Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it fails
-- In `Dashboards/Browse` click `Import` and copy the contents of `dashboard-template.json` from this repo 
-
 #### Deploy the backend app locally
 - Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
 - Download this project as a zip via the green button and unzip it 
 - Open the folder with the `requirements.txt` file, open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
 
+##### Windows 
 ```
+python -m venv env
+env\Scripts\activate
 pip install -r requirements.txt
-python canedge_datasource_cli.py file:///%cd%/LOG --port 8080
+python canedge_datasource_cli.py "file:///%cd%/LOG" --port 8080
 ```
 
-You should now see the sample data visualized when you open the imported dashboard in Grafana.
+##### Linux 
+```
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
+```
 
-For details on port forwarding, see the 'production' section further below.
+#### Set up Grafana locally
+- [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
+- In `Configuration/Plugins` install `SimpleJson` and `TrackMap`
+- In `Configuration/DataSources` select `Add datasource` and `SimpleJson` and set it as the 'default'
+- Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it works
+- In `Dashboards/Browse` click `Import` and load the `dashboard-template.json` from this repo 
+
+You should now see the sample data visualized when you open the imported dashboard in Grafana. If you later need to re-start the backend, remember to 'activate' the virtual environment first. If you aim to work with data stored on your PC, you can look into loading your own data (step 3) and optionally port forwarding (step 5). If you aim to load data from AWS S3, proceed to step 2.
 
 
 ### 2: Deploy the integration on AWS EC2 & Grafana Cloud
 An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data from AWS S3.
 
 - [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-aws-ec2-cloud.mp4)
-
-#### Set up Grafana Cloud
-- [Set up](https://grafana.com/auth/sign-up/create-user) a free Grafana Cloud account and log in
-- Follow the steps listed for the local deployment (plugins, datasource, dashboard import)
 
 #### Deploy the backend app on AWS EC2 
 
@@ -87,21 +94,25 @@ An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data fro
 - Click `Connect/Connect` to enter the GUI console, then enter the following:
 
 ```
-sudo apt update
-sudo apt install python3 python3-pip tmux
+sudo apt update && sudo apt install python3 python3-pip python3-venv tmux 
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
 cd canedge-grafana-backend
+python3 -m venv env
+source env/bin/activate
 pip install -r requirements.txt
 tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
-- In Grafana, replace your datasource URL with the `http://[IP]:[port]` endpoint and click `Save & test` 
-- In the GUI console, press `ctrl + B` then `D` to de-attach from the session
+#### Set up Grafana Cloud
+- [Set up](https://grafana.com/auth/sign-up/create-user) a free Grafana Cloud account and log in
+- In `Configuration/Plugins` install `SimpleJson` and `TrackMap` (log out and in again)
+- In `Configuration/DataSources` select `Add datasource` and `SimpleJson` and set it as the 'default'
+- Replace your datasource URL with the `http://[IP]:[port]` endpoint and click `Save & test` 
 
-You should now see the sample data visualized in your imported dashboard. 
+You should now see the sample data visualized in your imported dashboard. In the AWS EC2 console you can press `ctrl + B` then `D` to de-attach from the session, allowing it to run even when you close the GUI console.
 
-See also step 5 on how to deploy the app as a service for production.
+See also step 3 on loading your AWS S3 data and step 5 on deploying the app as a service for production.
 
 
 -----
@@ -109,7 +120,7 @@ See also step 5 on how to deploy the app as a service for production.
 ### 3: Load your own log files & DBC files
 
 #### Parse data from local disk 
-If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[device_id]/[session]/[split].MF4` structure.
+If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[folder/bucket]/[device_id]/[session]/[split].MF4` structure.
 
 #### Parse data from S3
 
@@ -123,7 +134,7 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 - MinIO S3 endpoint example: `http://192.168.192.1:9000`
 
 #### Regarding DBC files 
-All DBC files placed in the root of the parsed folder/bucket will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance.
+All DBC files placed in the `[folder/bucket]/` root will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance.
 
 ----
 
@@ -176,12 +187,13 @@ Below commands are useful in managing your `tmux` session while you're still tes
 
 The above setup is suitable for development & testing. Once you're ready to deploy for production, you may prefer to set up a service. This ensures that your app automatically restarts after an instance reboot or a crash. To set it up as a service, follow the below steps:
 
+- Ensure you've followed the previous EC2 steps incl. the virtual environment
 - Update the `ExecStart` line in the `canedge_grafana_backend.service` 'unit file' with your S3 details
-- Upload the modified file to get an URL
+- Upload the modified file to get a public URL
 - In your EC2 instance, use below commands to deploy the file
 
 ```
-sudo wget [your_file_url]
+sudo wget -N [your_file_url]
 sudo cp canedge_grafana_backend.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl start canedge_grafana_backend
@@ -218,4 +230,4 @@ Below are a list of pending items:
 - Update guide for EC2 service deployment for stability (instead of tmux)
 - Update code/guide for TLS-enabled deployment 
 - Provide guidance on how to best scale the app for multiple front-end users 
-- Determine if using `Browser` in SimpleJSON datasource improves performance (requires TLS)
+- Determine if using `Browser` in SimpleJson datasource improves performance (requires TLS)

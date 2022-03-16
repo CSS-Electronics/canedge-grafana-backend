@@ -1,8 +1,6 @@
 import json
 from datetime import datetime
 from enum import IntEnum, auto
-from numbers import Real
-
 from flask import Blueprint, jsonify, request
 from flask import current_app as app
 from canedge_datasource import cache
