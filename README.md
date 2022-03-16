@@ -46,7 +46,7 @@ Note: We recommend to test the local deployment with our sample data as the firs
 
 A local PC deployment is recommended if you wish to load data from an SD, local disk or MinIO S3.
 
-- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local_v2.mp4)
+- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local_v3.mp4)
 
 #### Deploy the backend app locally
 - Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
@@ -81,7 +81,7 @@ You should now see the sample data visualized in Grafana.
 ### 2: Deploy the integration on AWS EC2 & Grafana Cloud
 An [AWS EC2](https://aws.amazon.com/ec2/) instance is recommended if you wish to load data from your AWS S3 bucket.
 
-- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-aws-ec2-cloud.mp4)
+- [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-aws-ec2-cloud_v3.mp4)
 
 #### Deploy the backend app on AWS EC2 
 
