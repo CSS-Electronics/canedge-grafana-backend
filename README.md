@@ -14,7 +14,7 @@ We provide two options for integrating your CANedge data with Grafana dashboards
 
 The [CANedge Grafana Backend](https://github.com/CSS-Electronics/canedge-grafana-backend) app only processes data 'when needed' by an end user - and requires no database. It is ideal when you have large amounts of data - as you only process the data you need to visualize. 
 
-In contrast, the [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) requires that you process relevant data in advance (e.g. periodically or on-file-upload) and write the decoded data to a database. It is ideal if the dashboard loading speed is critical - but with the downside that large amounts of data is processed & stored (at a cost) without being used.
+The [CANedge InfluxDB Writer](https://github.com/CSS-Electronics/canedge-influxdb-writer) processes data in advance (e.g. periodically or on-file-upload) and writes the decoded data to a database. It is ideal if dashboard loading speed is critical - but with the downside that data is processed/stored even if it is not used.
 
 For details incl. 'pros & cons', see our [intro to telematics dashboards](https://www.csselectronics.com/pages/telematics-dashboard-open-source).
 
@@ -38,34 +38,30 @@ For details incl. 'pros & cons', see our [intro to telematics dashboards](https:
 ## Installation
 In this section we detail how to deploy the app on a PC or an AWS EC2 instance. 
 
-Note: We strongly recommend to test the local deployment with our sample data as the first step.
+Note: We recommend to test the local deployment with our sample data as the first step.
 
-Once you've made that work, you can start the backend with your own data/DBC files as per step 3.
+----
 
 ### 1: Deploy the integration locally on your PC
 
-A local PC deployment is ideal for testing, as well as parsing data from local disk or MinIO S3.
+A local PC deployment is recommended if you wish to load data from an SD, local disk or MinIO S3.
 
 - [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-local_v2.mp4)
 
 #### Deploy the backend app locally
 - Install Python 3.7 for Windows ([32 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)/[64 bit](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)) or [Linux](https://www.python.org/downloads/release/python-379/) (_enable 'Add to PATH'_)
 - Download this project as a zip via the green button and unzip it 
-- Open the folder with the `requirements.txt` file, open your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s) and enter below:
+- Open the folder with the `requirements.txt` file and enter below in your [command prompt](https://www.youtube.com/watch?v=bgSSJQolR0E&t=47s):
 
 ##### Windows 
 ```
-python -m venv env
-env\Scripts\activate
-pip install -r requirements.txt
+python -m venv env & env\Scripts\activate & pip install -r requirements.txt
 python canedge_datasource_cli.py "file:///%cd%/LOG" --port 8080
 ```
 
 ##### Linux 
 ```
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
+python3 -m venv env && source env/bin/activate && pip install -r requirements.txt
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
@@ -76,11 +72,14 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 - Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it works
 - In `Dashboards/Browse` click `Import` and load the `dashboard-template.json` from this repo 
 
-You should now see the sample data visualized when you open the imported dashboard in Grafana. If you later need to re-start the backend, remember to 'activate' the virtual environment first. If you aim to work with data stored on your PC, you can look into loading your own data (step 3) and optionally port forwarding (step 5). If you aim to load data from AWS S3, proceed to step 2.
+You should now see the sample data visualized in Grafana. 
 
+If you aim to work with CANedge2 data from AWS S3, go to step 2 - otherwise go to step 3.
+
+----
 
 ### 2: Deploy the integration on AWS EC2 & Grafana Cloud
-An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data from AWS S3.
+An [AWS EC2](https://aws.amazon.com/ec2/) instance is recommended if you wish to load data from your AWS S3 bucket.
 
 - [Watch the step-by-step video](https://canlogger1000.csselectronics.com/img/canedge-grafana-backend-aws-ec2-cloud.mp4)
 
@@ -90,16 +89,13 @@ An [AWS EC2](https://aws.amazon.com/ec2/) instance is ideal for parsing data fro
 - Select `Ubuntu Server 20.04 LTS (HVM), SSD Volume Type`, `t3.small` and proceed
 - In `Step 6`, click `Add Rule/Custom TCP Rule` and set `Port Range` to `8080`
 - Launch the instance, then create & store your credentials (we will not use them for now) 
-- Wait a few minutes, then click on your instance and note your `Public IPv4 address`
+- Wait ~5 min, click on your instance and note your IP (the `Public IPv4 address`)
 - Click `Connect/Connect` to enter the GUI console, then enter the following:
 
 ```
 sudo apt update && sudo apt install python3 python3-pip python3-venv tmux 
-git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git
-cd canedge-grafana-backend
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
+git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git && cd canedge-grafana-backend
+python3 -m venv env && source env/bin/activate && pip install -r requirements.txt
 tmux
 python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
@@ -117,14 +113,18 @@ See also step 3 on loading your AWS S3 data and step 5 on deploying the app as a
 
 -----
 
-### 3: Load your own log files & DBC files
+### 3: Load your own data & DBC files 
+Below we outline how to load your own data & DBC files. Note that you'll need to reactivate your virtual environment when re-starting the app (Windows: `env\Scripts\activate`, Linux: `source env/bin/activate`)
 
-#### Parse data from local disk 
-If you want to work with data from your local disk (e.g. a CANedge1 SD card), you must ensure that your data folder is structured similarly to the sample data `LOG/` folder. Your DBC file(s) must be placed in the folder root, while log files must be placed in the `[folder/bucket]/[device_id]/[session]/[split].MF4` structure.
+#### Load from local disk 
+- Replace the sample `LOG/` folder with your own `LOG/` folder (or add an absolute path)
+- Verify that your data is structured as on the CANedge SD card (`[device_id]/[session]/[split].MF4`)
+- Add your DBC file(s) to the root of the folder
+- Start the app again and update your dashboard 
 
-#### Parse data from S3
-
-To parse data from S3 (MinIO, AWS, ...), add your DBC file(s) to the root of your S3 bucket. Next, use below syntax to start the backend (use `python3` on EC2):
+#### Load from S3
+- Add your DBC file(s) to the root of your S3 bucket 
+- Start the app with below syntax (use `python3` on Linux/EC2)
 
 ```
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
@@ -134,7 +134,7 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 - MinIO S3 endpoint example: `http://192.168.192.1:9000`
 
 #### Regarding DBC files 
-All DBC files placed in the `[folder/bucket]/` root will be loaded and available for decoding (see the `LOG/` folder example). If you need to use multiple DBC files, consider merging & trimming these for performance.
+If you need multiple DBC files, consider merging & trimming these for performance.
 
 ----
 
@@ -172,7 +172,7 @@ Also, loading speed increases when displaying long time periods (as the data for
 
 ----
 
-### 5: Move to a production setup (EC2)
+### 5: Move to a production setup
 
 ##### Managing your EC2 tmux session
 
@@ -217,8 +217,7 @@ If you want to access the data remotely, you can set up port forwarding. Below w
 - Set up [port forwarding](https://portforward.com/) on your WiFi router for port `8080`
 - Run the app again (you may need to allow access via your firewall)
 - Find your [public IP](https://www.whatismyip.com/) to get your endpoint as: `http://[IP]:[port]` (e.g. `http://5.105.117.49:8080/`)
-- Verify that you see an `OK` when opening the endpoint in your browser
-- In Grafana, add your endpoint URL, click `Save & test` and verify that your dashboard displays the data
+- In Grafana, add your new endpoint URL and click `Save & test` 
 
 ----
 
@@ -227,7 +226,6 @@ Below are a list of pending items:
 
 - Optimize Flask/Waitress session management for stability
 - Improve performance for multiple DBC files
-- Update guide for EC2 service deployment for stability (instead of tmux)
 - Update code/guide for TLS-enabled deployment 
 - Provide guidance on how to best scale the app for multiple front-end users 
 - Determine if using `Browser` in SimpleJson datasource improves performance (requires TLS)
