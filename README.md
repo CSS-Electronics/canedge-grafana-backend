@@ -70,7 +70,7 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 - In `Configuration/Plugins` install `SimpleJson` and `TrackMap`
 - In `Configuration/DataSources` select `Add datasource` and `SimpleJson` and set it as the 'default'
 - Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it works
-- In `Dashboards/Browse` click `Import` and load the `dashboard-template.json` from this repo 
+- In `Dashboards/Browse` click `Import` and load the `dashboard-template-sample-data.json` from this repo 
 
 You should now see the sample data visualized in Grafana. 
 
@@ -105,6 +105,7 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 - In `Configuration/Plugins` install `SimpleJson` and `TrackMap` (log out and in again)
 - In `Configuration/DataSources` select `Add datasource` and `SimpleJson` and set it as the 'default'
 - Replace your datasource URL with the `http://[IP]:[port]` endpoint and click `Save & test` 
+- In `Dashboards/Browse` click `Import` and load the `dashboard-template-sample-data.json` from this repo 
 
 You should now see the sample data visualized in your imported dashboard. In the AWS EC2 console you can press `ctrl + B` then `D` to de-attach from the session, allowing it to run even when you close the GUI console.
 
@@ -132,7 +133,13 @@ Note: To activate your virtual environment use `env\Scripts\activate` (Linux: `s
 python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
 ```
 
-AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com` | MinIO S3 endpoint example: `http://192.168.192.1:9000`
+- AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
+- Google S3 endpoint example: `https://storage.googleapis.com`
+- MinIO S3 endpoint example: `http://192.168.192.1:9000`
+
+#### Import simplified dashboard template 
+- To get started, import the `dashboard-template-simple.json` to visualize your own data
+- After this, you can start customizing your panels as explained in step 4
 
 #### Regarding DBC files 
 If you need multiple DBC files, consider merging & trimming these for performance.

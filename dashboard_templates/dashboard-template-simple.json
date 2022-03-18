@@ -1,0 +1,260 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      },
+      {
+        "enable": true,
+        "iconColor": "dark-orange",
+        "name": "Session",
+        "query": "{\"annotation\": \"session\", \"device\": \"${DEVICE}\"}"
+      },
+      {
+        "enable": true,
+        "iconColor": "#ffce6c",
+        "name": "Split",
+        "query": "{\"annotation\": \"split\", \"device\": \"${DEVICE}\"}"
+      }
+    ]
+  },
+  "description": "",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 7,
+  "iteration": 1647610719376,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 15,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "maxDataPoints": 400,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 0.5,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-simple-json-datasource"
+          },
+          "hide": false,
+          "refId": "Variables",
+          "target": "{\"device\":\"${DEVICE}\",\"itf\":\"${ITF}\",\"chn\":\"${CHN}\",\"db\":\"${DB}\",\"signal\":\"${SIGNAL}\"}",
+          "type": "timeserie"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "${SIGNAL}",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "Variables"
+          }
+        }
+      ],
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 35,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource"
+        },
+        "definition": "{\"search\":\"device\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "DEVICE",
+        "multi": false,
+        "name": "DEVICE",
+        "options": [],
+        "query": "{\"search\":\"device\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource"
+        },
+        "definition": "{\"search\":\"db\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "DB",
+        "multi": false,
+        "name": "DB",
+        "options": [],
+        "query": "{\"search\":\"db\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "CH1",
+          "value": "CH1"
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource"
+        },
+        "definition": "{\"search\":\"chn\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "CHN",
+        "multi": false,
+        "name": "CHN",
+        "options": [],
+        "query": "{\"search\":\"chn\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "CAN",
+          "value": "CAN"
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource"
+        },
+        "definition": "{\"search\":\"itf\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "ITF",
+        "multi": false,
+        "name": "ITF",
+        "options": [],
+        "query": "{\"search\":\"itf\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true
+        },
+        "datasource": {
+          "type": "grafana-simple-json-datasource"
+        },
+        "definition": "{\"search\":\"signal\", \"db\": \"${DB}\"}",
+        "hide": 0,
+        "includeAll": false,
+        "label": "SIGNAL",
+        "multi": true,
+        "name": "SIGNAL",
+        "options": [],
+        "query": "{\"search\":\"signal\", \"db\": \"${DB}\"}",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-12h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "CANedge Grafana Backend - Template (Simple)",
+  "uid": "u1TFGpL7a",
+  "version": 1,
+  "weekStart": ""
+}
