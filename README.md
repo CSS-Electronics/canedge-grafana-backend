@@ -142,13 +142,16 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 - After this, you can start customizing your panels as explained in step 4
 
 #### Regarding DBC files 
-If you need multiple DBC files, consider merging & trimming these for performance.
+You can load as many DBC files as you want without reducing performance, as long as your queries only use one at a time (as is e.g. the case when using the simple dashboard template). However, if your queries need to use multiple DBC files, you may consider 'combining' your DBC files for optimal performance.
+
+#### Regarding compression
+It is recommended to enable the CANedge compression as the compressed `MFC` files are 50%+ smaller and thus faster to load.
 
 ----
 
 ### 4: Customize your Grafana dashboard
 
-The `dashboard-template.json` can be used to identify how to make queries, incl. below examples:
+The `dashboard-template-sample-data.json` can be used to identify how to make queries, incl. below examples:
 
 ```
 # create a fully customized query that depends on what the user selects in the dropdown 
@@ -162,7 +165,7 @@ The `dashboard-template.json` can be used to identify how to make queries, incl.
 ```
 
 #### Bundle queries for multiple panels 
-When displaying multiple panels in your dashboard, it is critical to setup all queries in a single panel (as in our template). All other panels can then be set up to refer to the original panel by setting the datasource as `-- Dashboard --`. For both the 'query panel' and 'referring panels' you can then use the `Transform` tab to `Filter data by query`. This allows you to specify which query should be displayed in which panel. The end result is that only 1 query is sent to the backend - which means that your CANedge log files are only processed once per update. 
+When displaying multiple panels in your dashboard, it is critical to setup all queries in a single panel (as in our sample data template). All other panels can then be set up to refer to the original panel by setting the datasource as `-- Dashboard --`. For both the 'query panel' and 'referring panels' you can then use the `Transform` tab to `Filter data by query`. This allows you to specify which query should be displayed in which panel. The end result is that only 1 query is sent to the backend - which means that your CANedge log files are only processed once per update. 
 
 <img src="https://canlogger1000.csselectronics.com/img/dashboard-query-bundling.jpg" width="679.455" height="226.477">
 
