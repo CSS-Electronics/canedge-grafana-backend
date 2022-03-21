@@ -143,14 +143,14 @@
         "datasource": {
           "type": "grafana-simple-json-datasource"
         },
-        "definition": "{\"search\":\"device\"}",
+        "definition": "{\"search\":\"device_name\"}",
         "hide": 0,
         "includeAll": false,
         "label": "DEVICE",
         "multi": false,
         "name": "DEVICE",
         "options": [],
-        "query": "{\"search\":\"device\"}",
+        "query": "{\"search\":\"device_name\"}",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

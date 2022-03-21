@@ -6,7 +6,7 @@ Specifically, a light-weight backend app loads, DBC decodes and parses MDF log f
 
 **This project is currently in BETA - major changes will be made.**
 
-![CAN Bus Grafana Dashboard](https://canlogger1000.csselectronics.com/img/can-bus-telematics-dashboard-template.png)
+![CAN Bus Grafana Dashboard](https://canlogger1000.csselectronics.com/img/can-bus-telematics-dashboard-template_v2.jpg)
 
 
 ## Backend vs. Writer
@@ -139,13 +139,13 @@ python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s
 
 #### Import simplified dashboard template 
 - To get started, import the `dashboard-template-simple.json` to visualize your own data
-- After this, you can start customizing your panels as explained in step 4
+- After this, you can optionally start customizing your panels as explained in step 4
 
 #### Regarding DBC files 
 You can load as many DBC files as you want without reducing performance, as long as your queries only use one at a time (as is e.g. the case when using the simple dashboard template). However, if your queries need to use multiple DBC files, you may consider 'combining' your DBC files for optimal performance.
 
 #### Regarding compression
-It is recommended to enable the CANedge compression as the compressed `MFC` files are 50%+ smaller and thus faster to load.
+We recommend enabling the CANedge compression as the `MFC` files are 50%+ smaller and thus faster to load.
 
 ----
 
@@ -169,12 +169,20 @@ When displaying multiple panels in your dashboard, it is critical to setup all q
 
 <img src="https://canlogger1000.csselectronics.com/img/dashboard-query-bundling.jpg" width="679.455" height="226.477">
 
-#### Set up Grafana Variables & Annotations
-Grafana Variables allow users to dynamically control what is displayed in certain panels via dropdowns. For details on how the Variables are defined, see the template dashboard under `Settings/Variables`.
+#### Set up Grafana Variables 
+Grafana [Variables](https://grafana.com/docs/grafana/latest/variables/) allow users to dynamically control what is displayed in certain panels via dropdowns. If you load the dashboard templates, you can find a range of supported Variable queries in `Settings/Variables`.
 
-Similarly, Annotations can be used to display when a new log file 'session' or 'split' occurs, as well as display the log file name. This makes it easy to identify the log files underlying a specific view - and then finding these via [CANcloud](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/cancloud-intro/) or [TntDrive](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/other-s3-tools/) for further processing.
+For example, the `DEVICE` Variable is a `Query` type using SimpleJson as datasource and the query `{"search":"device_name"}`. This will list all CANedge device serial numbers in the source folder and add the 'meta' field from the last log file header of each device. 
 
-<img src="https://canlogger1000.csselectronics.com/img/Grafana-Variables-Annotations.jpg" width="679.455" height="226.477">
+Replacing `device_name` for `device` displays only the device ID. If you want to add a hardcoded list of device names, you can do so by using the type `Custom` and in the values field add `name_1 : id_1, name2 : id_2` where the names reflect the names to be displayed in the dropdown, while the ids reflect the serial numbers of the CANedge devices. If you have a large number of CANedge devices, using either the `device` query or the custom approach can increase performance. 
+
+<img src="https://canlogger1000.csselectronics.com/img/Grafana-Variables.jpg" width="679.455" height="226.477">
+
+
+#### Set up Grafana Annotations 
+
+Annotations can be used to display when a new log file 'session' or 'split' occurs, as well as display the log file name. This makes it easy to identify the log files behind a specific time period - and then finding these via [CANcloud](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/cancloud-intro/) or [TntDrive](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/other-s3-tools/) for further processing.
+
 
 #### Regarding performance
 Using the 'zoom out' button repeatedly will currently generate a queue of requests, each of which will be processed by the backend. Until this is optimized, we recommend to make a single request a time - e.g. by using the time period selector instead of the 'zoom out' button. 
