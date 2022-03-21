@@ -68,7 +68,7 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 #### Set up Grafana locally
 - [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
 - In `Configuration/Plugins` install `SimpleJson` and `TrackMap`
-- In `Configuration/DataSources` select `Add datasource` and `SimpleJson` and set it as the 'default'
+- In `Configuration/DataSources/Add datasource` select `SimpleJson`, set it as `default` with `Timeout = 1000`
 - Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it works
 - In `Dashboards/Browse` click `Import` and load the `dashboard-template-sample-data.json` from this repo 
 
@@ -103,7 +103,7 @@ python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 #### Set up Grafana Cloud
 - [Set up](https://grafana.com/auth/sign-up/create-user) a free Grafana Cloud account and log in
 - In `Configuration/Plugins` install `SimpleJson` and `TrackMap` (log out and in again)
-- In `Configuration/DataSources` select `Add datasource` and `SimpleJson` and set it as the 'default'
+- In `Configuration/DataSources/Add datasource` select `SimpleJson`, set it as `default` with `Timeout = 1000`
 - Replace your datasource URL with the `http://[IP]:[port]` endpoint and click `Save & test` 
 - In `Dashboards/Browse` click `Import` and load the `dashboard-template-sample-data.json` from this repo 
 
