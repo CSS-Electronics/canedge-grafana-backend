@@ -61,8 +61,8 @@ python canedge_datasource_cli.py "file:///%cd%/LOG" --port 8080
 
 ##### Linux 
 ```
-python3 -m venv env && source env/bin/activate && pip install -r requirements.txt
-python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
+python -m venv env && source env/bin/activate && pip install -r requirements.txt
+python canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
 #### Set up Grafana locally
@@ -85,7 +85,8 @@ An [AWS EC2](https://aws.amazon.com/ec2/) instance is recommended if you wish to
 
 #### Deploy the backend app on AWS EC2 
 
-- Login to AWS, search for `EC2/Instances` and click `Launch instances`
+- Login to AWS and verify that you are in the same region as your S3 bucket (upper right corner)
+- Search for `EC2/Instances` and click `Launch instances`
 - Select `Ubuntu Server 20.04 LTS (HVM), SSD Volume Type`, `t3.small` and proceed
 - In `Step 6`, click `Add Rule/Custom TCP Rule` and set `Port Range` to `8080`
 - Launch the instance, then create & store your credentials (we will not use them for now) 
@@ -93,11 +94,11 @@ An [AWS EC2](https://aws.amazon.com/ec2/) instance is recommended if you wish to
 - Click `Connect/Connect` to enter the GUI console, then enter the following:
 
 ```
-sudo apt update && sudo apt install python3 python3-pip python3-venv tmux 
+sudo apt update && sudo apt install python3 python3-pip python3-venv tmux python-is-python3 -y
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git && cd canedge-grafana-backend
-python3 -m venv env && source env/bin/activate && pip install -r requirements.txt
+python -m venv env && source env/bin/activate && pip install -r requirements.txt
 tmux
-python3 canedge_datasource_cli.py file:///$PWD/LOG --port 8080
+python canedge_datasource_cli.py file:///$PWD/LOG --port 8080
 ```
 
 #### Set up Grafana Cloud
@@ -127,10 +128,10 @@ Note: To activate your virtual environment use `env\Scripts\activate` (Linux: `s
 
 #### Load from S3
 - Add your DBC file(s) to the root of your S3 bucket 
-- Verify that your venv is active and start the app with below syntax (use `python3` on Linux/EC2)
+- Verify that your venv is active and start the app with below syntax
 
 ```
-python canedge_datasource_cli.py [endpoint] --port 8080 --s3_ak [access_key] --s3_sk [secret_key] --s3_bucket [bucket]
+python canedge_datasource_cli.py endpoint --port 8080 --s3_ak access_key --s3_sk secret_key --s3_bucket bucket
 ```
 
 - AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
