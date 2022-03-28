@@ -177,6 +177,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
     ]
     """
     import time
+    import psutil
 
     start = time.time()
     print("Starting query processing time measurement ...")
@@ -198,6 +199,9 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
         # Load log files one at a time (to reduce memory usage)
         for log_file in log_files:
 
+            print(
+                f"Status before processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+            )
             # Get size of file
             file_size_mb = fs.stat(log_file)["size"] >> 20
 
@@ -250,6 +254,10 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Decode
                 df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
 
+                print(
+                    f"Status after creating df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+                )
+
                 # Check if output contains any signals
                 if "Signal" not in df_phys.columns:
                     continue
@@ -294,6 +302,14 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
 
                     # Update result with additional datapoints
                     result[result_index]["datapoints"].extend(list(zip(values, timestamps)))
+
+                    print(
+                        f"Status after extracting result: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+                    )
+
+    print(
+        f"Status after all logs are done: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+    )
 
     end = time.time()
     print(f"Total time used on query: {end - start}")
