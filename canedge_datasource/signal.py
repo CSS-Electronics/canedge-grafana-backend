@@ -274,9 +274,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Drop unused columns
                 df_phys.drop(["CAN ID", "Raw Value"], axis=1, inplace=True)
 
-                print(
-                    f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys with dropped columns"
-                )
+                print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys dropped col")
                 print(f"--- df_phys (dropped) size: {round(sys.getsizeof(df_phys) / 1000000,1)}")
 
                 # Resample each signal using the specific method and interval.
