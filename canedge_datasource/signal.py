@@ -220,7 +220,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
             # loading times significantly (and takes a lot of memory)
             start_epoch, df_raw_can, df_raw_lin, = _load_log_file(fs, log_file, [x.itf for x in device_group])
 
-            print(f"Size of df_raw_can: {sys.getsizeof(df_raw_can)} | {sys.getsizeof(df_raw_lin)} ")
+            print(f"Size of df_raw_can: {sys.getsizeof(df_raw_can)/1000000} | df_raw_lin: {sys.getsizeof(df_raw_lin)/1000000} ")
             # Keep only selected time interval (files may contain a more at both ends). Do this early to process as
             # little data as possible
             df_raw_can = df_raw_can.loc[start_date:stop_date]
