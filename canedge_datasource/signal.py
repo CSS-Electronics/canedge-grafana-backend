@@ -178,12 +178,11 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
     """
     import time
     import psutil
+    import sys
 
     start = time.time()
     print("Starting query processing time measurement ...")
-    print(
-        f"Status before query processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
-    )
+    print(f"Status before query processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
 
     # Init response to make sure that we respond to all targets, even if without data points
     result = [{"refId": x.refid, "target": x.target, "datapoints": []} for x in signal_queries]
@@ -202,9 +201,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
         # Load log files one at a time (to reduce memory usage)
         for log_file in log_files:
 
-            print(
-                f"Status before processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
-            )
+            print(f"Status before processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
             # Get size of file
             file_size_mb = fs.stat(log_file)["size"] >> 20
 
@@ -257,10 +254,8 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Decode
                 df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
 
-                print(
-                    f"Status after creating df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
-                )
-
+                print(f"Status after creating df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
+                print("df_phys size: ", sys.getsizeof(df_phys))
                 # Check if output contains any signals
                 if "Signal" not in df_phys.columns:
                     continue
@@ -272,8 +267,9 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 df_phys.drop(["CAN ID", "Raw Value"], axis=1, inplace=True)
 
                 print(
-                    f"Status after dropping signals/columns from df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+                    f"Status after dropping signals/columns from df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}"
                 )
+                print("df_phys size: ", sys.getsizeof(df_phys))
 
                 # Resample each signal using the specific method and interval.
                 # Making sure that only existing/real data points are included in the output (no interpolations etc).
@@ -310,9 +306,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     # Update result with additional datapoints
                     result[result_index]["datapoints"].extend(list(zip(values, timestamps)))
 
-    print(
-        f"Status after all logs are done: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
-    )
+    print(f"Status after all logs are done: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
 
     end = time.time()
     print(f"Total time used on query: {end - start}")
