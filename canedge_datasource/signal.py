@@ -255,7 +255,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
 
                 print(f"Status after creating df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
-                print("df_phys size: ", sys.getsizeof(df_phys))
+                print("df_phys size: ", sys.getsizeof(df_phys) / 1000000)
                 # Check if output contains any signals
                 if "Signal" not in df_phys.columns:
                     continue
@@ -269,7 +269,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 print(
                     f"Status after dropping signals/columns from df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}"
                 )
-                print("df_phys size: ", sys.getsizeof(df_phys))
+                print("df_phys size: ", sys.getsizeof(df_phys) / 1000000)
 
                 # Resample each signal using the specific method and interval.
                 # Making sure that only existing/real data points are included in the output (no interpolations etc).
