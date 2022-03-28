@@ -204,7 +204,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
             print(f"Status before processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
             # Get size of file
             file_size_mb = fs.stat(log_file)["size"] >> 20
-            print(f"\nfile_size_mb: {file_size_mb} | data_processed_mb: {data_processed_mb}")
+            print(f"\nfile_size_mb: {file_size_mb}")
 
             # Check if we have reached the limit of data processed in MB
             if data_processed_mb + file_size_mb > limit_mb:
@@ -220,10 +220,12 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
             # loading times significantly (and takes a lot of memory)
             start_epoch, df_raw_can, df_raw_lin, = _load_log_file(fs, log_file, [x.itf for x in device_group])
 
+            print(f"Size of df_raw_can: {sys.getsizeof(df_raw_can)} | {sys.getsizeof(df_raw_lin)} ")
             # Keep only selected time interval (files may contain a more at both ends). Do this early to process as
             # little data as possible
             df_raw_can = df_raw_can.loc[start_date:stop_date]
             df_raw_lin = df_raw_lin.loc[start_date:stop_date]
+            print(f"Status after loading raw data: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
 
             # If no data, continue to next file
             if len(df_raw_can) == 0 and len(df_raw_lin) == 0:
