@@ -14,12 +14,13 @@ from canmatrix.formats import dbc
 @click.command()
 @click.argument('data_url', envvar='CANEDGE_DATA_URL')
 @click.option('--port', required=False, default=5000, type=int, help='The port of the datasource server')
+@click.option('--limit', required=False, default=100, type=int, help='Limit on data to process in MB')
 @click.option('--s3_ak', required=False, envvar='CANEDGE_S3_AK', type=str, help='S3 access key')
 @click.option('--s3_sk', required=False, envvar='CANEDGE_S3_SK', type=str, help='S3 secret key')
 @click.option('--s3_bucket', required=False, envvar='CANEDGE_S3_BUCKET', type=str, help='S3 bucket name')
 @click.option('--s3_cert', required=False, envvar='CANEDGE_S3_CERT', type=click.Path(), help='S3 cert path')
 @click.option('--debug/--no-debug', required=False, default=False, help='Backend debug')
-def main(data_url, port, s3_ak, s3_sk, s3_bucket, s3_cert, debug):
+def main(data_url, port, limit, s3_ak, s3_sk, s3_bucket, s3_cert, debug):
     """
     CANedge Grafana Datasource. Provide a URL pointing to a CANedge data root.
 
@@ -102,7 +103,7 @@ def main(data_url, port, s3_ak, s3_sk, s3_bucket, s3_cert, debug):
     print(f"Mount path: {data_url}")
     print(f"Loaded DBs: {', '.join(dbs.keys())}")
 
-    start_server(fs, dbs, port, debug)
+    start_server(fs, dbs, port, limit, debug)
 
 if __name__ == '__main__':
     main()

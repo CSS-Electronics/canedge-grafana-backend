@@ -159,7 +159,11 @@ def _query_time_series(req: dict, start_date: datetime, stop_date: datetime) -> 
                                               method=target_req.get("method", SampleMethod.NEAREST)))
 
     # Get signals
-    return time_series_phy_data(fs=app.fs, signal_queries=signal_queries, start_date=start_date, stop_date=stop_date)
+    return time_series_phy_data(fs=app.fs,
+                                signal_queries=signal_queries,
+                                start_date=start_date,
+                                stop_date=stop_date,
+                                limit_mb=app.limit_mb)
 
 def _query_table(req: dict, start_date: datetime, stop_date: datetime) -> list:
 
