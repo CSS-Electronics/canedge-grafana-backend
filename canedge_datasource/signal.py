@@ -181,6 +181,9 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
 
     start = time.time()
     print("Starting query processing time measurement ...")
+    print(
+        f"Status before query processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+    )
 
     # Init response to make sure that we respond to all targets, even if without data points
     result = [{"refId": x.refid, "target": x.target, "datapoints": []} for x in signal_queries]
@@ -268,6 +271,10 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Drop unused columns
                 df_phys.drop(["CAN ID", "Raw Value"], axis=1, inplace=True)
 
+                print(
+                    f"Status after dropping signals/columns from df_phys: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
+                )
+
                 # Resample each signal using the specific method and interval.
                 # Making sure that only existing/real data points are included in the output (no interpolations etc).
                 for signal_group in decode_group:
@@ -302,10 +309,6 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
 
                     # Update result with additional datapoints
                     result[result_index]["datapoints"].extend(list(zip(values, timestamps)))
-
-                    print(
-                        f"Status after extracting result: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
-                    )
 
     print(
         f"Status after all logs are done: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} | % of available memory {psutil.virtual_memory().available * 100 / psutil.virtual_memory().total}"
