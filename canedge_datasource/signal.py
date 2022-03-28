@@ -204,6 +204,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
             print(f"Status before processing: CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent}")
             # Get size of file
             file_size_mb = fs.stat(log_file)["size"] >> 20
+            print("raw file size based on sys: ", sys.getsizeof(log_file) / 1000000)
 
             # Check if we have reached the limit of data processed in MB
             if data_processed_mb + file_size_mb > limit_mb:
