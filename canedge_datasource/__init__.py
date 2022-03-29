@@ -9,7 +9,7 @@ from waitress import serve
 app = Flask(__name__, instance_relative_config=True)
 
 # Flask app cache
-cache = Cache(config={'CACHE_TYPE': 'NullCache', 'CACHE_THRESHOLD': 25})
+cache = Cache(config={"CACHE_TYPE": "SimpleCache", "CACHE_THRESHOLD": 25})
 
 def start_server(fs: AbstractFileSystem, dbs: [dict], port: int, limit_mb: int, debug: bool=False):
     """

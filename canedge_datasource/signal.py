@@ -181,9 +181,7 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
     import sys
 
     start = time.time()
-    print("\n---------------------------------------------")
-    print("Starting query processing time measurement ...")
-    print(f"CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - query to be started")
+    # print(f"CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - query to be started")
 
     # Init response to make sure that we respond to all targets, even if without data points
     result = [{"refId": x.refid, "target": x.target, "datapoints": []} for x in signal_queries]
@@ -210,8 +208,9 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 print(f"File: {log_file} - Skipping (limit {limit_mb} MB)")
                 continue
             print(f"File: {log_file}")
-            print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded MF4")
-            print(f"--- file_size_mb: {file_size_mb} MB")
+
+            # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded MF4")
+            # print(f"--- file_size_mb: {file_size_mb} MB")
 
             # Update size of data processed
             data_processed_mb += file_size_mb
@@ -221,10 +220,8 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
             # loading times significantly (and takes a lot of memory)
             start_epoch, df_raw_can, df_raw_lin, = _load_log_file(fs, log_file, [x.itf for x in device_group])
 
-            print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded raw data")
-            print(
-                f"--- df_raw_can: {round(sys.getsizeof(df_raw_can)/1000000,1)} MB | df_raw_lin: {round(sys.getsizeof(df_raw_lin)/1000000,1)} MB"
-            )
+            # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded raw data")
+            # print(f"--- df_raw_can: {round(sys.getsizeof(df_raw_can)/1000000,1)} MB | df_raw_lin: {round(sys.getsizeof(df_raw_lin)/1000000,1)} MB")
 
             # Keep only selected time interval (files may contain a more at both ends). Do this early to process as
             # little data as possible
@@ -261,8 +258,8 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Decode
                 df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
 
-                print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys")
-                print(f"--- df_phys size: {round(sys.getsizeof(df_phys) / 1000000,1)} MB")
+                # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys")
+                # print(f"--- df_phys size: {round(sys.getsizeof(df_phys) / 1000000,1)} MB")
 
                 # Check if output contains any signals
                 if "Signal" not in df_phys.columns:
@@ -274,8 +271,8 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Drop unused columns
                 df_phys.drop(["CAN ID", "Raw Value"], axis=1, inplace=True)
 
-                print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys dropped col")
-                print(f"--- df_phys (dropped) size: {round(sys.getsizeof(df_phys) / 1000000,1)}")
+                # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys dropped col")
+                # print(f"--- df_phys (dropped) size: {round(sys.getsizeof(df_phys) / 1000000,1)}")
 
                 # Resample each signal using the specific method and interval.
                 # Making sure that only existing/real data points are included in the output (no interpolations etc).
@@ -312,10 +309,10 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     # Update result with additional datapoints
                     result[result_index]["datapoints"].extend(list(zip(values, timestamps)))
 
-    print(f"CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - all logs completed")
+    # print(f"CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - all logs completed")
 
     end = time.time()
-    print(f"Time used on query: {end - start}")
+    print(f"Time spent on query: {end - start}")
 
     return result
 
