@@ -5,6 +5,7 @@ Flask==2.0.3
 itsdangerous==2.1.2
 Flask-Caching==1.10.1
 canmatrix==0.9.3
-pandas
-s3fs
-waitress
+pandas==1.2.4
+s3fs==2022.2.0
+waitress==2.1.1
+psutil

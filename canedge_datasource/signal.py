@@ -15,10 +15,11 @@ from canedge_datasource.enums import CanedgeInterface, CanedgeChannel, SampleMet
 
 @dataclass
 class SignalQuery:
-
     def __str__(self):
-        return (f"{self.refid}, {self.target}, {self.device}, {self.itf.name}, {self.chn.name}, {self.signal_name}, "
-                f"{self.interval_ms}, {self.method.name}")
+        return (
+            f"{self.refid}, {self.target}, {self.device}, {self.itf.name}, {self.chn.name}, {self.signal_name}, "
+            f"{self.interval_ms}, {self.method.name}"
+        )
 
     refid: str
     target: str
@@ -72,23 +73,23 @@ def table_fs(fs, device, start_date: datetime, stop_date: datetime, max_data_poi
 
     res = [
         {
-                "type": "table",
-                "columns": [
-                    {"text": "TIME", "type": "time"},
-                    {"text": "DEVICE", "type": "string"},
-                    {"text": "SESSION", "type": "string"},
-                    {"text": "SPLIT", "type": "string"},
-                    {"text": "SIZE [MB]", "type": "string"},
-                    {"text": "CONFIG CRC", "type": "string"},
-                    {"text": "HW", "type": "string"},
-                    {"text": "FW", "type": "string"},
-                    {"text": "STORAGE [MB]", "type": "string"},
-                    {"text": "NAME", "type": "string"},
-                    {"text": "META", "type": "string"},
-                ],
-                "rows": rows
-            }
-        ]
+            "type": "table",
+            "columns": [
+                {"text": "TIME", "type": "time"},
+                {"text": "DEVICE", "type": "string"},
+                {"text": "SESSION", "type": "string"},
+                {"text": "SPLIT", "type": "string"},
+                {"text": "SIZE [MB]", "type": "string"},
+                {"text": "CONFIG CRC", "type": "string"},
+                {"text": "HW", "type": "string"},
+                {"text": "FW", "type": "string"},
+                {"text": "STORAGE [MB]", "type": "string"},
+                {"text": "NAME", "type": "string"},
+                {"text": "META", "type": "string"},
+            ],
+            "rows": rows,
+        }
+    ]
     return res
 
 
@@ -107,11 +108,11 @@ def table_raw_data(fs, device, start_date: datetime, stop_date: datetime, max_da
         _, df_raw_can, df_raw_lin, = _load_log_file(fs, log_file, [CanedgeInterface.CAN, CanedgeInterface.LIN])
 
         # Add interface column
-        df_raw_can['ITF'] = "CAN"
-        df_raw_lin['ITF'] = "LIN"
+        df_raw_can["ITF"] = "CAN"
+        df_raw_lin["ITF"] = "LIN"
 
         # Lin set extended to 0
-        df_raw_lin['IDE'] = 0
+        df_raw_lin["IDE"] = 0
 
         # Merge data frames
         df_raw_chunk = pd.concat([df_raw_can, df_raw_lin])
@@ -130,20 +131,19 @@ def table_raw_data(fs, device, start_date: datetime, stop_date: datetime, max_da
     df_raw.reset_index(inplace=True)
 
     # Keep only selected columns
-    df_raw = df_raw[["TimeStamp", 'ITF', 'BusChannel', 'ID', 'IDE', 'DataLength', 'DataBytes']]
+    df_raw = df_raw[["TimeStamp", "ITF", "BusChannel", "ID", "IDE", "DataLength", "DataBytes"]]
 
     # Rename columns
-    df_raw.rename(columns={"TimeStamp": "TIME", "BusChannel": "CHN", "DataLength": "NOB", 'DataBytes': "DATA"},
-                  inplace=True)
+    df_raw.rename(columns={"TimeStamp": "TIME", "BusChannel": "CHN", "DataLength": "NOB", "DataBytes": "DATA"}, inplace=True)
 
     # Cut to max data points
     df_raw = df_raw[0:max_data_points]
 
     # Change from datetime to epoch
-    df_raw['TIME'] = df_raw['TIME'].astype(np.int64) / 10 ** 6
+    df_raw["TIME"] = df_raw["TIME"].astype(np.int64) / 10 ** 6
 
     # Change "Databytes" from array to hex string
-    df_raw['DATA'] = df_raw['DATA'].apply(lambda data: ' '.join('{:02X}'.format(x) for x in data))
+    df_raw["DATA"] = df_raw["DATA"].apply(lambda data: " ".join("{:02X}".format(x) for x in data))
 
     # Column names and types
     columns = [{"text": x, "type": "time" if x == "TIME" else "string"} for x in list(df_raw.columns)]
@@ -152,7 +152,7 @@ def table_raw_data(fs, device, start_date: datetime, stop_date: datetime, max_da
     return [{"type": "table", "columns": columns, "rows": df_raw.values.tolist()}]
 
 
-def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime, stop_date: datetime) -> dict:
+def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime, stop_date: datetime, limit_mb) -> dict:
     """
     Returns time series based on a list of signal queries.
 
@@ -176,9 +176,18 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
         {'target': 'C', 'datapoints': [(3.1, 1603895728164.1), (3.2, 1603895729164.15), (3.3, 1603895729164.24)]}
     ]
     """
+    import time
+    import psutil
+    import sys
+
+    start = time.time()
+    # print(f"CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - query to be started")
 
     # Init response to make sure that we respond to all targets, even if without data points
-    result = [{'refId': x.refid, 'target': x.target, 'datapoints': []} for x in signal_queries]
+    result = [{"refId": x.refid, "target": x.target, "datapoints": []} for x in signal_queries]
+
+    # Keep track on how much data has been processed (in MB)
+    data_processed_mb = 0
 
     # Group the signal queries by device, such that files from the same device needs to be loaded only once
     for device, device_group in groupby(signal_queries, lambda x: x.device):
@@ -191,10 +200,28 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
         # Load log files one at a time (to reduce memory usage)
         for log_file in log_files:
 
+            # Get size of file
+            file_size_mb = fs.stat(log_file)["size"] >> 20
+
+            # Check if we have reached the limit of data processed in MB
+            if data_processed_mb + file_size_mb > limit_mb:
+                print(f"File: {log_file} - Skipping (limit {limit_mb} MB)")
+                continue
+            print(f"File: {log_file}")
+
+            # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded MF4")
+            # print(f"--- file_size_mb: {file_size_mb} MB")
+
+            # Update size of data processed
+            data_processed_mb += file_size_mb
+
             # TODO: caching can be improved on by taking log file and signal - such that the cached data contain the
             # decoded signals (with max time resolution). Currently, the cache contains all data, which does not improve
             # loading times significantly (and takes a lot of memory)
-            start_epoch, df_raw_can, df_raw_lin,  = _load_log_file(fs, log_file, [x.itf for x in device_group])
+            start_epoch, df_raw_can, df_raw_lin, = _load_log_file(fs, log_file, [x.itf for x in device_group])
+
+            # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded raw data")
+            # print(f"--- df_raw_can: {round(sys.getsizeof(df_raw_can)/1000000,1)} MB | df_raw_lin: {round(sys.getsizeof(df_raw_lin)/1000000,1)} MB")
 
             # Keep only selected time interval (files may contain a more at both ends). Do this early to process as
             # little data as possible
@@ -205,8 +232,6 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
             if len(df_raw_can) == 0 and len(df_raw_lin) == 0:
                 continue
 
-            print(f"File: {log_file}, start time: {start_epoch}")
-
             # Group queries using the same db, interface and channel (to minimize the number of decoding runs)
             for (itf, chn, db), decode_group in groupby(device_group, lambda x: (x.itf, x.chn, x.db)):
 
@@ -216,42 +241,48 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 df_raw = df_raw_can if itf == CanedgeInterface.CAN else df_raw_lin
 
                 # Keep only selected channel
-                df_raw = df_raw.loc[df_raw['BusChannel'] == int(chn)]
+                df_raw = df_raw.loc[df_raw["BusChannel"] == int(chn)]
 
                 # If IDE missing (LIN) add dummy allow decoding
-                if 'IDE' not in df_raw:
-                    df_raw['IDE'] = 0
+                if "IDE" not in df_raw:
+                    df_raw["IDE"] = 0
 
                 # Filter out IDs not used before the costly decoding step (bit 32 cleared). For simplicity, does not
                 # differentiate standard and extended. Result is potentially unused IDs passed for decoding if overlaps
                 if db.protocol == "J1939":
-                    #TODO Find out how to de pre-filtering on PGNs to speed up J1939 decoding
+                    # TODO Find out how to de pre-filtering on PGNs to speed up J1939 decoding
                     pass
                 else:
-                    df_raw = df_raw[df_raw['ID'].isin([x & 0x7FFFFFFF for x in db.frames.keys()])]
+                    df_raw = df_raw[df_raw["ID"].isin([x & 0x7FFFFFFF for x in db.frames.keys()])]
 
                 # Decode
                 df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
 
+                # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys")
+                # print(f"--- df_phys size: {round(sys.getsizeof(df_phys) / 1000000,1)} MB")
+
                 # Check if output contains any signals
-                if 'Signal' not in df_phys.columns:
+                if "Signal" not in df_phys.columns:
                     continue
 
                 # Keep only requested signals
-                df_phys = df_phys[df_phys['Signal'].isin([x.signal_name for x in decode_group])]
+                df_phys = df_phys[df_phys["Signal"].isin([x.signal_name for x in decode_group])]
 
                 # Drop unused columns
-                df_phys.drop(['CAN ID', 'Raw Value'], axis=1, inplace=True)
+                df_phys.drop(["CAN ID", "Raw Value"], axis=1, inplace=True)
+
+                # print(f"- CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - loaded df_phys dropped col")
+                # print(f"--- df_phys (dropped) size: {round(sys.getsizeof(df_phys) / 1000000,1)}")
 
                 # Resample each signal using the specific method and interval.
                 # Making sure that only existing/real data points are included in the output (no interpolations etc).
                 for signal_group in decode_group:
 
                     # "Backup" the original timestamps, such that these can be used after resampling
-                    df_phys['time_orig'] = df_phys.index
+                    df_phys["time_orig"] = df_phys.index
 
                     # Extract the signal
-                    df_phys_signal = df_phys.loc[df_phys['Signal'] == signal_group.signal_name]
+                    df_phys_signal = df_phys.loc[df_phys["Signal"] == signal_group.signal_name]
 
                     # Pick the min, max or nearest. This picks a real data value but potentially a "fake" timestamp
                     interval_ms = signal_group.interval_ms
@@ -265,18 +296,23 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     # The "original" time was also resampled. Use this to restore true data points.
                     # Drop duplicates and nans (duplicates were potentially created during "nearest" resampling)
                     # This also makes sure that data is never up-sampled
-                    df_phys_signal_resample.drop_duplicates(subset='time_orig', inplace=True)
-                    df_phys_signal_resample.dropna(axis=0, how='any', inplace=True)
+                    df_phys_signal_resample.drop_duplicates(subset="time_orig", inplace=True)
+                    df_phys_signal_resample.dropna(axis=0, how="any", inplace=True)
 
                     # Timestamps and values to list
                     timestamps = (df_phys_signal_resample["time_orig"].astype(np.int64) / 10 ** 6).tolist()
                     values = df_phys_signal_resample["Physical Value"].values.tolist()
 
                     # Get the list index of the result to update
-                    result_index = [idx for idx, value in enumerate(result) if value['target'] == signal_group.target][0]
+                    result_index = [idx for idx, value in enumerate(result) if value["target"] == signal_group.target][0]
 
                     # Update result with additional datapoints
                     result[result_index]["datapoints"].extend(list(zip(values, timestamps)))
+
+    # print(f"CPU {psutil.cpu_percent()} | RAM used % {psutil.virtual_memory().percent} - all logs completed")
+
+    end = time.time()
+    print(f"Time spent on query: {end - start}")
 
     return result
 
