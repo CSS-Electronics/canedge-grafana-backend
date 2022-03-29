@@ -56,13 +56,13 @@ A local PC deployment is recommended if you wish to load data from an SD, local 
 ##### Windows 
 ```
 python -m venv env & env\Scripts\activate & pip install -r requirements.txt
-python canedge_datasource_cli.py "file:///%cd%/LOG" --port 8080
+python canedge_datasource_cli.py "file:///%cd%/LOG" --port 8080 --limit 100
 ```
 
 ##### Linux 
 ```
 python -m venv env && source env/bin/activate && pip install -r requirements.txt
-python canedge_datasource_cli.py file:///$PWD/LOG --port 8080
+python canedge_datasource_cli.py file:///$PWD/LOG --port 8080 --limit 100
 ```
 
 #### Set up Grafana locally
@@ -98,7 +98,7 @@ sudo apt update && sudo apt install python3 python3-pip python3-venv tmux python
 git clone https://github.com/CSS-Electronics/canedge-grafana-backend.git && cd canedge-grafana-backend
 python -m venv env && source env/bin/activate && pip install -r requirements.txt
 tmux
-python canedge_datasource_cli.py file:///$PWD/LOG --port 8080
+python canedge_datasource_cli.py file:///$PWD/LOG --port 8080 --limit 100
 ```
 
 #### Set up Grafana Cloud
@@ -131,7 +131,7 @@ Note: To activate your virtual environment use `env\Scripts\activate` (Linux: `s
 - Verify that your venv is active and start the app with below syntax
 
 ```
-python canedge_datasource_cli.py endpoint --port 8080 --s3_ak access_key --s3_sk secret_key --s3_bucket bucket
+python canedge_datasource_cli.py endpoint --port 8080 --limit 100 --s3_ak access_key --s3_sk secret_key --s3_bucket bucket
 ```
 
 - AWS S3 endpoint example: `https://s3.eu-central-1.amazonaws.com`
@@ -185,10 +185,12 @@ Replacing `device_name` for `device` displays only the device ID. If you want to
 Annotations can be used to display when a new log file 'session' or 'split' occurs, as well as display the log file name. This makes it easy to identify the log files behind a specific time period - and then finding these via [CANcloud](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/cancloud-intro/) or [TntDrive](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/other-s3-tools/) for further processing.
 
 
-#### Regarding performance
-Using the 'zoom out' button repeatedly will currently generate a queue of requests, each of which will be processed by the backend. Until this is optimized, we recommend to make a single request a time - e.g. by using the time period selector instead of the 'zoom out' button. 
+#### Regarding performance & stability
+If a request is initiated while the backend is in-progress, it'll cause a `501` error and the in-progress query will be cancelled. This helps avoid generating long queues of requests when users e.g. zoom out quickly. 
 
-Also, loading speed increases when displaying long time periods (as the data for the period is processed in real-time).
+Further, the backend supports the `--limit` input, speciying how much log file data can be requested in one query - by default set at 100 MB. If a query exceeds this, it'll get aborted when the limit is reached. This helps avoid users initiating extreme queries of e.g. several GB. 
+
+Note also that loading speed increases when displaying long time periods (as the data for the period is processed in real-time).
 
 ----
 
@@ -229,6 +231,9 @@ You can find details on AWS EC2 pricing [here](https://aws.amazon.com/ec2/pricin
 #### Regarding public EC2 IP 
 Note that rebooting your EC2 instance will imply that your endpoint IP is changed - and thus you'll need to update your datasource. There are methods to set a fixed IP, though not in scope of this README. 
 
+#### Regarding EC2 memory 
+The backend will use RAM both for storing dataframes when processing log files, as well as for caching. The required RAM depends on your log file size and DBC - we recommend at least 2 GB of RAM for most use cases (which e.g. the `t3.small` has). On AWS EC2, the default behavior will be to 'kill' the process if RAM usage exceeds available memory. As an alternative to this behavior, you can consider using a (swap file](https://wiki.archlinux.org/title/Swap#Swap_file).
+
 
 #### Port forwarding a local deployment
 
@@ -245,7 +250,8 @@ If you want to access the data remotely, you can set up port forwarding. Below w
 Below are a list of pending items:
 
 - Optimize Flask/Waitress session management for stability
-- Improve performance for multiple DBC files
+- Optimize caching/memory usage for stability
+- Improve performance for multiple DBC files and log files
 - Update code/guide for TLS-enabled deployment 
 - Provide guidance on how to best scale the app for multiple front-end users 
 - Determine if using `Browser` in SimpleJson datasource improves performance (requires TLS)
