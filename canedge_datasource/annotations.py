@@ -1,11 +1,13 @@
 import json
-import re
 import canedge_browser
 import mdf_iter
 from flask import Blueprint, jsonify, request
 from flask import current_app as app
 from canedge_datasource import cache
 from canedge_datasource.time_range import parse_time_range
+
+import logging
+logger = logging.getLogger(__name__)
 
 annotations = Blueprint('annotations', __name__)
 
@@ -30,54 +32,61 @@ def annotations_view():
         try:
             annotation_req = json.loads(query_req)
         except ValueError as e:
-            print(f"Failed parse annotation: {query_req}")
-            return jsonify(res)
+            logger.warning(f"Annotation parse fail: {query_req}")
+            raise
 
         if "annotation" not in annotation_req:
-            print(f"Unknown annotation {query_req}")
+            logger.warning(f"Unknown annotation request: {query_req}")
+            raise ValueError
 
-        # Split / session annotations
-        elif annotation_req["annotation"] in ["session", "split"] and "device" in annotation_req:
+        if annotation_req["annotation"] not in ["session", "split"]:
+            logger.warning(f"Unknown annotation request: {annotation_req['annotation']}")
+            raise ValueError
 
-            # Get time interval to annotate
-            start_date, stop_date = parse_time_range(req["range"]["from"], req["range"]["to"])
+        if "device" not in annotation_req:
+            logger.warning("Unknown annotation device")
+            raise ValueError
 
-            # Get log files in time interval
-            log_files = canedge_browser.get_log_files(app.fs, annotation_req["device"], start_date=start_date,
-                                                      stop_date=stop_date)
+        # Get time interval to annotate
+        start_date, stop_date = parse_time_range(req["range"]["from"], req["range"]["to"])
 
-            for log_file in log_files:
+        # Get log files in time interval
 
-                # Parse filename
-                file_matches = re.match(
-                    r"\S?[0-9A-F]{8}/(?P<session_no>\d{8})/(?P<split_no>\d{8})(?:-[0-9A-F]{8}){0,1}\.MF4$",
-                    log_file,
-                    re.IGNORECASE)
+        log_files = canedge_browser.get_log_files(app.fs, annotation_req["device"], start_date=start_date,
+                                                  stop_date=stop_date, passwords=app.passwords)
 
-                if not file_matches:
-                    continue
+        for log_file in log_files:
 
-                session_no = file_matches.group("session_no")
-                split_no = file_matches.group("split_no")
+            # Parse log file path
+            device_id, session_no, split_no, ext = app.fs.path_to_pars(log_file)
 
-                # Only generate annotation if annotation is split or annotation is session with first split file
-                if not ((annotation_req["annotation"] == "split") or
-                        (annotation_req["annotation"] == "session" and int(split_no, 10) == 1)):
-                    continue
+            if None in [device_id, session_no, split_no, ext]:
+                continue
 
-                # Get file start time
-                with app.fs.open(log_file, "rb") as handle:
-                    mdf_file = mdf_iter.MdfFile(handle)
-                    log_file_start_timestamp_ns = mdf_file.get_first_measurement()
+            # Only generate annotation if annotation is split or annotation is session with first split file
+            if not ((annotation_req["annotation"] == "split") or
+                    (annotation_req["annotation"] == "session" and int(split_no, 10) == 1)):
+                continue
 
-                res.append({
-                    "text": f"{log_file}\n"
-                            f"Session: {int(session_no, 10)}\n"
-                            f"Split: {int(split_no, 10)}\n"
-                            f"Size: {app.fs.size(log_file) >> 20} MB",
-                    "time": log_file_start_timestamp_ns / 1000000,
-                })
+            # Get file start time
+            with app.fs.open(log_file, "rb") as handle:
+                mdf_file = mdf_iter.MdfFile(handle, passwords=app.passwords)
+                log_file_start_timestamp_ns = mdf_file.get_first_measurement()
+
+            res.append({
+                "text": f"{log_file}\n"
+                        f"Session: {int(session_no, 10)}\n"
+                        f"Split: {int(split_no, 10)}\n"
+                        f"Size: {app.fs.size(log_file) >> 20} MB",
+                "time": log_file_start_timestamp_ns / 1000000,
+            })
 
         return jsonify(res)
 
-    return annotations_cache(request.get_json())
+    try:
+        res = annotations_cache(request.get_json())
+    except Exception as e:
+        logger.warning(f"Failed to annotate: {e}")
+        res = jsonify([])
+    finally:
+        return res

@@ -67,6 +67,7 @@ python canedge_datasource_cli.py file:///$PWD/LOG --port 8080 --limit 100
 
 #### Set up Grafana locally
 - [Install Grafana locally](https://grafana.com/grafana/download?platform=windows) and enter `http://localhost:3000` in your browser to open Grafana
+- Login via the default credentials `admin` / `admin` 
 - In `Configuration/Plugins` install `SimpleJson` and `TrackMap`
 - In `Configuration/DataSources/Add datasource` select `SimpleJson`, set it as `default` with `Timeout = 1000`
 - Enter the URL `http://localhost:8080/`, hit `Save & test` and verify that it works
@@ -145,8 +146,10 @@ python canedge_datasource_cli.py endpoint --port 8080 --limit 100 --s3_ak access
 #### Regarding DBC files 
 You can load as many DBC files as you want without reducing performance, as long as your queries only use one at a time (as is e.g. the case when using the simple dashboard template). However, if your queries need to use multiple DBC files, you may consider 'combining' your DBC files for optimal performance.
 
-#### Regarding compression
-We recommend enabling the CANedge compression as the `MFC` files are 50%+ smaller and thus faster to load.
+#### Regarding compression & encryption
+We recommend enabling the CANedge compression as the `MFC` files are 50%+ smaller and thus faster to load. 
+
+You can also process encrypted log files (`MFE/MFM`) by adding your `passwords.json` file in the root of your data folder (see the CLI help for details).
 
 ----
 

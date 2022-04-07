@@ -8,6 +8,9 @@ from canedge_datasource.enums import CanedgeInterface, CanedgeChannel, SampleMet
 from canedge_datasource.signal import SignalQuery, time_series_phy_data, table_raw_data, table_fs
 from canedge_datasource.time_range import parse_time_range
 
+import logging
+logger = logging.getLogger(__name__)
+
 query = Blueprint('query', __name__)
 
 
@@ -40,8 +43,12 @@ def _json_decode_target(target):
     # Decode target (the query entered by the user formatted as json)
     try:
         return json.loads(target, object_hook=_json_target_decode)
-    except ValueError as e:
+    except KeyError as e:
+        # Handle invalid enum mapping errors (key not exist)
+        logger.warning(f"Invalid target {e}")
         return None
+    except Exception as e:
+        raise
 
 @query.route('/query', methods=['POST'])
 def query_view():
@@ -132,15 +139,17 @@ def _query_time_series(req: dict, start_date: datetime, stop_date: datetime) -> 
         # Decode target
         target_req = _json_decode_target(elm["target"])
         if target_req is None:
-            print(f"Failed to query target: {elm['target']}")
+            logger.warning(f"Failed to query target: {elm['target']}")
             continue
 
         # Fields required for series
         if not all(x in target_req for x in ["device", "itf", "chn", "db", "signal"]):
+            logger.warning(f"Target missing required fields: {target_req}")
             continue
 
         # Check that DB is known
         if target_req["db"] not in app.dbs.keys():
+            logger.warning(f"Unknown DB: {target_req['db']}")
             continue
 
         # If multiple signals in request, add each as signal query
@@ -163,7 +172,8 @@ def _query_time_series(req: dict, start_date: datetime, stop_date: datetime) -> 
                                 signal_queries=signal_queries,
                                 start_date=start_date,
                                 stop_date=stop_date,
-                                limit_mb=app.limit_mb)
+                                limit_mb=app.limit_mb,
+                                passwords=app.passwords)
 
 def _query_table(req: dict, start_date: datetime, stop_date: datetime) -> list:
 
@@ -171,11 +181,13 @@ def _query_table(req: dict, start_date: datetime, stop_date: datetime) -> list:
 
     # Currently, only a single table target supported
     elm = req["targets"][0]
+    if len(req["targets"]) > 1:
+        logger.warning(f"Table query with multiple targets not supported")
 
     # Decode target
     target_req = _json_decode_target(elm["target"])
     if target_req is None:
-        print(f"Failed to query target: {elm['target']}")
+        logger.warning(f"Failed to query target: {elm['target']}")
         return res
 
     # Fields required for table
@@ -185,18 +197,19 @@ def _query_table(req: dict, start_date: datetime, stop_date: datetime) -> list:
         request_type = target_req.get("type", RequestType.DATA)
 
         if request_type is RequestType.DATA:
-            # Return data
             res = table_raw_data(fs=app.fs,
                              device=target_req["device"],
                              start_date=start_date,
                              stop_date=stop_date,
-                             max_data_points=req["maxDataPoints"])
+                             max_data_points=req["maxDataPoints"],
+                             passwords=app.passwords)
 
         elif request_type is RequestType.INFO:
             res = table_fs(fs=app.fs,
                            device=target_req["device"],
                            start_date=start_date,
                            stop_date=stop_date,
-                           max_data_points=req["maxDataPoints"])
+                           max_data_points=req["maxDataPoints"],
+                           passwords=app.passwords)
 
     return res
