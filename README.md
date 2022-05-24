@@ -249,9 +249,9 @@ The backend will use RAM both for storing dataframes when processing log files, 
 
 The CLI takes a number of optional input arguments - including below:
 
-- `limit`: This lets you set a max limit on how much data (measured in size of MF4 log files) can be processed in a single query (default is `100 MB`)
-- `tp_type`: This can be set to `uds`, `j1939` or `nmea` to enable the use of multiframe decoding (disabled by default)
-- `loglevel`: This lets you control the level of console information printed from more to less: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` (default is `INFO`)
+- `limit`: Set a max limit (MB of MF4 logs) on how much data processed in one query (default: `100 MB`)
+- `tp_type`: Set to `uds`, `j1939` or `nmea` to enable multiframe decoding (default: Disabled)
+- `loglevel`: Set the console detail level: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` (default: `INFO`)
 
 #### Port forwarding a local deployment
 
