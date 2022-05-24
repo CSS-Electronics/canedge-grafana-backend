@@ -7,6 +7,7 @@ import canedge_browser
 import can_decoder
 import mdf_iter
 from datetime import datetime
+from utils import MultiFrameDecoder
 
 from canedge_datasource import cache
 from canedge_datasource.enums import CanedgeInterface, CanedgeChannel, SampleMethod
@@ -162,7 +163,7 @@ def table_raw_data(fs, device, start_date: datetime, stop_date: datetime, max_da
 
 
 def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime, stop_date: datetime, limit_mb,
-                         passwords) -> dict:
+                         passwords, tp_type) -> dict:
     """
     Returns time series based on a list of signal queries.
 
@@ -261,9 +262,26 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     pass
                 else:
                     df_raw = df_raw[df_raw['ID'].isin([x & 0x7FFFFFFF for x in db.frames.keys()])]
+                    # TODO optimize by using requested signals to create a smaller subset DBC and filter by that
 
-                # Decode
-                df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
+                if tp_type != "":
+                    # Decode after first re-segmenting CAN data according to TP type (uds, j1939, nmea)
+                    #TODO Optimize for speed
+                    tp = MultiFrameDecoder(tp_type)
+                    df_raw = tp.combine_tp_frames(df_raw)
+
+                    df_phys = pd.DataFrame()
+                    df_phys_temp = pd.DataFrame()
+                    for length, group in df_raw.groupby("DataLength"):
+                        df_phys_group = can_decoder.DataFrameDecoder(db).decode_frame(group)
+                        df_phys_temp = df_phys_temp.append(df_phys_group)
+
+                    df_phys = df_phys.append(df_phys_temp.sort_index())
+
+                else:
+                    # Decode
+                    df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
+
 
                 # Check if output contains any signals
                 if 'Signal' not in df_phys.columns:

@@ -19,7 +19,9 @@ from urllib.request import url2pathname
 @click.option('--s3_cert', required=False, envvar='CANEDGE_S3_CERT', type=click.Path(), help='S3 cert path')
 @click.option('--loglevel', required=False, default="INFO",
               type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]), help='Logging level')
-def main(data_url, port, limit, s3_ak, s3_sk, s3_bucket, s3_cert, loglevel):
+@click.option('--tp_type', required=False, default="", type=str, help='ISO TP type (uds, j1939, nmea)')
+
+def main(data_url, port, limit, s3_ak, s3_sk, s3_bucket, s3_cert, loglevel, tp_type):
     """
     CANedge Grafana Datasource. Provide a URL pointing to a CANedge data root.
 
@@ -121,7 +123,7 @@ def main(data_url, port, limit, s3_ak, s3_sk, s3_bucket, s3_cert, loglevel):
             logging.error(f"Unable to load passwords file")
             sys.exit(-1)
 
-    start_server(fs, dbs, passwords, port, limit)
+    start_server(fs, dbs, passwords, port, limit, tp_type)
 
 if __name__ == '__main__':
     main()

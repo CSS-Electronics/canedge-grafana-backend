@@ -173,7 +173,8 @@ def _query_time_series(req: dict, start_date: datetime, stop_date: datetime) -> 
                                 start_date=start_date,
                                 stop_date=stop_date,
                                 limit_mb=app.limit_mb,
-                                passwords=app.passwords)
+                                passwords=app.passwords,
+                                tp_type=app.tp_type)
 
 def _query_table(req: dict, start_date: datetime, stop_date: datetime) -> list:
 

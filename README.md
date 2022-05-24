@@ -31,6 +31,7 @@ For details incl. 'pros & cons', see our [intro to telematics dashboards](https:
 - plug & play dashboard templates & sample data let you get started quickly 
 - view log file sessions & splits via Annotations, enabling easy identification of underlying data 
 - allow end users control over what devices/signals are displayed via flexible Variables
+- Support for CAN, CAN FD and LIN, as well as CAN ISO TP (UDS, J1939, NMEA 2000)
 ```
 
 ----
@@ -195,6 +196,8 @@ Further, the backend supports the `--limit` input, speciying how much log file d
 
 Note also that loading speed increases when displaying long time periods (as the data for the period is processed in real-time).
 
+For optimal loading speed, we recommend using a small log file split size (e.g. 1 to 10 MB uncompressed) and that you minimize your logs via filters/prescalers. 
+
 ----
 
 ### 5: Move to a production setup
@@ -238,6 +241,18 @@ Note that rebooting your EC2 instance will imply that your endpoint IP is change
 The backend will use RAM both for storing dataframes when processing log files, as well as for caching. The required RAM depends on your log file size and DBC - we recommend at least 2 GB of RAM for most use cases (which e.g. the `t3.small` has). On AWS EC2, the default behavior will be to 'kill' the process if RAM usage exceeds available memory. As an alternative to this behavior, you can consider using a (swap file](https://wiki.archlinux.org/title/Swap#Swap_file).
 
 
+----
+
+### Other comments
+
+#### Optional input arguments
+
+The CLI takes a number of optional input arguments - including below:
+
+- `limit`: This lets you set a max limit on how much data (measured in size of MF4 log files) can be processed in a single query (default is `100 MB`)
+- `tp_type`: This can be set to `uds`, `j1939` or `nmea` to enable the use of multiframe decoding (disabled by default)
+- `loglevel`: This lets you control the level of console information printed from more to less: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` (default is `INFO`)
+
 #### Port forwarding a local deployment
 
 If you want to access the data remotely, you can set up port forwarding. Below we outline how to port forward the backend app for use as a datasource in Grafana Cloud - but you could of course also directly port forward your local Grafana dashboard directly via port `3000`. 
@@ -252,6 +267,7 @@ If you want to access the data remotely, you can set up port forwarding. Below w
 ### Pending tasks 
 Below are a list of pending items:
 
+- Optimize for speed (massive improvements to be expected in later versions)
 - Optimize Flask/Waitress session management for stability
 - Optimize caching/memory usage for stability
 - Improve performance for multiple DBC files and log files

@@ -13,7 +13,7 @@ app = Flask(__name__, instance_relative_config=True)
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_THRESHOLD': 25})
 
 
-def start_server(fs: AbstractFileSystem, dbs: [dict], passwords: [dict], port: int, limit_mb: int):
+def start_server(fs: AbstractFileSystem, dbs: [dict], passwords: [dict], port: int, limit_mb: int, tp_type: str):
     """
     Start server.
     :param fs: FS mounted in CANedge "root"
@@ -21,6 +21,7 @@ def start_server(fs: AbstractFileSystem, dbs: [dict], passwords: [dict], port: i
     :param passwords: List of log file passwords
     :param port: Port of the datasource server
     :param limit_mb: Limit amount of data to process
+    :param tp_type: Type of ISO TP (multiframe) data to handle (uds, j1939, nmea)
     """
 
     # TODO: Not sure if this is the preferred way to share objects with the blueprints
@@ -32,6 +33,7 @@ def start_server(fs: AbstractFileSystem, dbs: [dict], passwords: [dict], port: i
     app.dbs = dbs
     app.passwords = passwords
     app.limit_mb = limit_mb
+    app.tp_type = tp_type
 
     # Create cache for faster access on repeated calls
     cache.init_app(app)
