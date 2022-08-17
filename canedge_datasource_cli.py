@@ -95,7 +95,7 @@ def main(data_url, port, limit, s3_ak, s3_sk, s3_bucket, s3_cert, loglevel, tp_t
 
             args["verify"] = s3_cert_path
 
-        fs = CanedgeFileSystem(protocol="s3", base_path=s3_bucket, key=s3_ak, secret=s3_sk, client_kwargs=args)
+        fs = CanedgeFileSystem(protocol="s3", base_path=s3_bucket, key=s3_ak, secret=s3_sk, client_kwargs=args, use_listings_cache=False)
     else:
         logging.error(f"Unsupported data URL: {data_url}")
         sys.exit(-1)
