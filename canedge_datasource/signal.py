@@ -270,13 +270,12 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     tp = MultiFrameDecoder(tp_type)
                     df_raw = tp.combine_tp_frames(df_raw)
 
-                    df_phys = pd.DataFrame()
-                    df_phys_temp = pd.DataFrame()
+                    df_phys_temp = [] #pd.DataFrame()
                     for length, group in df_raw.groupby("DataLength"):
                         df_phys_group = can_decoder.DataFrameDecoder(db).decode_frame(group)
-                        df_phys_temp = df_phys_temp.append(df_phys_group)
+                        df_phys_temp.append(df_phys_group)
 
-                    df_phys = df_phys.append(df_phys_temp.sort_index())
+                    df_phys = pd.concat(df_phys_temp,ignore_index=False).sort_index()
 
                 else:
                     # Decode
