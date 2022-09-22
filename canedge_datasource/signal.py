@@ -251,6 +251,9 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                 # Keep only selected channel
                 df_raw = df_raw.loc[df_raw['BusChannel'] == int(chn)]
 
+                if df_raw.empty:
+                    continue
+
                 # If IDE missing (LIN) add dummy allow decoding
                 if 'IDE' not in df_raw:
                     df_raw['IDE'] = 0
@@ -273,9 +276,16 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     df_phys_temp = [] #pd.DataFrame()
                     for length, group in df_raw.groupby("DataLength"):
                         df_phys_group = can_decoder.DataFrameDecoder(db).decode_frame(group)
+
+                        if 'Signal' not in df_phys_group.columns:
+                            continue
+
                         df_phys_temp.append(df_phys_group)
 
-                    df_phys = pd.concat(df_phys_temp,ignore_index=False).sort_index()
+                    if len(df_phys_temp) > 0:
+                        df_phys = pd.concat(df_phys_temp,ignore_index=False).sort_index()
+                    else:
+                        df_phys = pd.DataFrame()
 
                 else:
                     # Decode
