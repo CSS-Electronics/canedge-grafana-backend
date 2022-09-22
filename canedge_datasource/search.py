@@ -50,12 +50,17 @@ def search_view():
                 # Return list of device ids and meta comments (slow)
                 for device in app.fs.get_device_ids():
                     # Get most recent log file
-                    log_file, _, _ = next(app.fs.get_device_log_files(device=device, reverse=True), None)
-                    # Get log file comment
-                    if log_file is not None:
-                        comment = " " + get_logfile_comment(log_file)
-                    else:
+                    try:
+                        log_file, _, _ = next(app.fs.get_device_log_files(device=device, reverse=True), None)
+                        # Get log file comment
+                        if log_file is not None:
+                            comment = " " + get_logfile_comment(log_file)
+                        else:
+                            comment = ""
+                    except:
+                        print(f"Unable to list log files for {device} - review folder structure and log file names")
                         comment = ""
+
                     res.append({"text": f"{device}{comment}", "value": device})
             elif req["search"] == "itf":
                 # Return list of interfaces
