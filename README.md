@@ -90,9 +90,12 @@ An [AWS EC2](https://aws.amazon.com/ec2/) instance is recommended if you wish to
 - Login to AWS and verify that you are in the same region as your S3 bucket (upper right corner)
 - Search for `EC2/Instances` and click `Launch instances`
 - Select `Ubuntu Server 20.04 LTS (HVM), SSD Volume Type`, `t3.small` and proceed
-- In `Step 6`, click `Add Rule/Custom TCP Rule` and set `Port Range` to `8080`
-- Launch the instance, then create & store your credentials (we will not use them for now) 
-- Wait ~5 min, click on your instance and note your IP (the `Public IPv4 address`)
+- In `Key pair (login)` select `Proceed without a key pair`
+- In Network settings click Edit and `Add security group rule`
+- Go to `Security group rule 2 (TCP, 8)`
+- Set `Type` to `Custom TCP`, `Port Range` to `8080` and `Source type` to `Anywhere`
+- Launch the instance and wait ~2 min
+- Click on your instance and note your IP (the `Public IPv4 address`)
 - Click `Connect/Connect` to enter the GUI console, then enter the following:
 
 ```
