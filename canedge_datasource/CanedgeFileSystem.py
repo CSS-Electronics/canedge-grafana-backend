@@ -42,7 +42,7 @@ class CanedgeFileSystem(RelativeFileSystem):
 
     def path_to_pars(self, path):
         """Matches as much as possible of path to CANedge pars (device id, session, split, extension)"""
-        pattern = r"^(?P<device_id>[0-9A-F]{8})?((/)(?P<session_no>\d{8}))?((/)(?P<split_no>\d{8})(?:-[0-9A-F]{8}){0,1}(\S*)(?P<ext>\.(MF4|MFC|MFM|MFE)))?$"
+        pattern = r"^(?P<device_id>[0-9A-F]{8})?((/)(?P<session_no>\d{8}))?((/)(?P<split_no>\d{8})(?:-[0-9A-F]{8}){0,1}(?P<ext>\.(MF4|MFC|MFM|MFE)))?$"
         match = re.match(pattern, path, re.IGNORECASE)
         if match:
             return match.group("device_id"), match.group("session_no"), match.group("split_no"), match.group("ext")
