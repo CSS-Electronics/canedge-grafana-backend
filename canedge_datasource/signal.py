@@ -273,23 +273,22 @@ def time_series_phy_data(fs, signal_queries: [SignalQuery], start_date: datetime
                     tp = MultiFrameDecoder(tp_type)
                     df_raw = tp.combine_tp_frames(df_raw)
 
-                    df_phys_temp = [] #pd.DataFrame()
-                    for length, group in df_raw.groupby("DataLength"):
-                        df_phys_group = can_decoder.DataFrameDecoder(db).decode_frame(group)
+                df_phys_temp = [] 
+                for length, group in df_raw.groupby("DataLength"):
+                    df_phys_group = can_decoder.DataFrameDecoder(db).decode_frame(group)
 
-                        if 'Signal' not in df_phys_group.columns:
-                            continue
+                    if 'Signal' not in df_phys_group.columns:
+                        continue
 
-                        df_phys_temp.append(df_phys_group)
+                    df_phys_temp.append(df_phys_group)
 
-                    if len(df_phys_temp) > 0:
-                        df_phys = pd.concat(df_phys_temp,ignore_index=False).sort_index()
-                    else:
-                        df_phys = pd.DataFrame()
-
+                if len(df_phys_temp) > 0:
+                    df_phys = pd.concat(df_phys_temp,ignore_index=False).sort_index()
                 else:
-                    # Decode
-                    df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
+                    df_phys = pd.DataFrame()
+
+                # commented out the original option of a "clean" decoding due to lack of support for mixed DLC rows in df_raw
+                # df_phys = can_decoder.DataFrameDecoder(db).decode_frame(df_raw)
 
 
                 # Check if output contains any signals
