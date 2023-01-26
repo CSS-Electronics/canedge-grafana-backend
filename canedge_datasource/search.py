@@ -27,7 +27,7 @@ def search_view():
             with app.fs.open(log_file, "rb") as handle:
                 try:
                     meta_data = mdf_iter.MdfFile(handle, passwords=app.passwords).get_metadata()
-                    comment = meta_data.get("HDComment.Device Information.File Information.comment", {}).get("value_raw").strip()
+                    comment = meta_data.get("HDcomment.File Information.comment", {}).get("value_raw").strip()
                 except:
                     logger.warning("Could not extract meta data from log file")
                     pass

@@ -1,7 +1,8 @@
-def setup_fs(s3, key="", secret="", endpoint="", cert="", passwords={}):
+def setup_fs(s3, key="", secret="", endpoint="", region="",cert="", passwords={}):
     """Given a boolean specifying whether to use local disk or S3, setup filesystem
     Syntax examples: AWS (http://s3.us-east-2.amazonaws.com), MinIO (http://192.168.0.1:9000)
     The cert input is relevant if you're using MinIO with TLS enabled, for specifying the path to the certficiate.
+    For MinIO you should also parse the region_name
 
     The block_size is set to accomodate files up to 55 MB in size. If your log files are larger, adjust this value accordingly
     """
@@ -17,14 +18,14 @@ def setup_fs(s3, key="", secret="", endpoint="", cert="", passwords={}):
             fs = s3fs.S3FileSystem(
                 key=key,
                 secret=secret,
-                client_kwargs={"endpoint_url": endpoint, "verify": cert},
+                client_kwargs={"endpoint_url": endpoint, "verify": cert, "region_name": region},
                 default_block_size=block_size,
             )
         else:
             fs = s3fs.S3FileSystem(
                 key=key,
                 secret=secret,
-                client_kwargs={"endpoint_url": endpoint},
+                client_kwargs={"endpoint_url": endpoint, "region_name": region},
                 default_block_size=block_size,
             )
 
@@ -87,7 +88,7 @@ def add_signal_prefix(df_phys, can_id_prefix=False, pgn_prefix=False):
 
     return df_phys
 
-def restructure_data(df_phys, res):
+def restructure_data(df_phys, res, ffill=False):
     """Restructure the decoded data to a resampled
     format where each column reflects a Signal
     """
@@ -96,6 +97,9 @@ def restructure_data(df_phys, res):
     if not df_phys.empty and res != "":
         df_phys = df_phys.pivot_table(values="Physical Value", index=pd.Grouper(freq=res), columns="Signal")
 
+    if ffill:
+        df_phys = df_phys.ffill()
+        
     return df_phys
 
 
@@ -227,7 +231,7 @@ class ProcessData:
         return df_raw, device_id
 
     def get_device_id(self, mdf_file):
-        return mdf_file.get_metadata()["HDComment.Device Information.serial number"]["value_raw"]
+        return mdf_file.get_metadata()["HDcomment.Device Information.serial number"]["value_raw"]
 
     def print_log_summary(self, device_id, log_file, df_phys):
         """Print summary information for each log file"""

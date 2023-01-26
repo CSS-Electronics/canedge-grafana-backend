@@ -54,14 +54,14 @@ def table_fs(fs, device, start_date: datetime, stop_date: datetime, max_data_poi
 
         # Get size
         size_mb = fs.size(log_file) >> 20
-        session = meta_data.get("HDComment.Device Information.File Information.session", {}).get("value_raw")
-        split = meta_data.get("HDComment.Device Information.File Information.split", {}).get("value_raw")
-        config_crc = meta_data.get("HDComment.Device Information.config crc32 checksum", {}).get("value_raw")
-        hw_rev = meta_data.get("HDComment.Device Information.hardware version", {}).get("value_raw")
-        fw_rev = meta_data.get("HDComment.Device Information.firmware version", {}).get("value_raw")
-        storage_free = meta_data.get("HDComment.Device Information.storage free", {}).get("value_raw")
-        storage_total = meta_data.get("HDComment.Device Information.storage total", {}).get("value_raw")
-        comment = meta_data.get("HDComment.Device Information.File Information.comment", {}).get("value_raw").strip()
+        session = meta_data.get("HDcomment.File Information.session", {}).get("value_raw")
+        split = meta_data.get("HDcomment.File Information.split", {}).get("value_raw")
+        config_crc = meta_data.get("HDcomment.Device Information.config crc32 checksum", {}).get("value_raw")
+        hw_rev = meta_data.get("HDcomment.Device Information.hardware version", {}).get("value_raw")
+        fw_rev = meta_data.get("HDcomment.Device Information.firmware version", {}).get("value_raw")
+        storage_free = meta_data.get("HDcomment.Device Information.storage free", {}).get("value_raw")
+        storage_total = meta_data.get("HDcomment.Device Information.storage total", {}).get("value_raw")
+        comment = meta_data.get("HDcomment.File Information.comment", {}).get("value_raw").strip()
 
         storage_mb = ""
         if storage_free is not None and storage_total is not None:
