@@ -1,0 +1,1 @@
+env\Scripts\activate & python canedge_datasource_cli.py "file:///%cd%/LOG" --port 8080 --limit 100
