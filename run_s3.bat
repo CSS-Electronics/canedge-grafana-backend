@@ -1,1 +1,1 @@
-env\Scripts\activate & python canedge_datasource_cli.py endpoint --port 8080 --limit 100 --s3_ak access_key --s3_sk secret_key --s3_bucket bucket
+env\Scripts\activate & python canedge_datasource_cli.py http://s3.ap-southeast-2.amazonaws.com --port 80 --limit 100 --s3_ak AKIAZUXPWWNBAUIFZMVC --s3_sk VlOPLSEcroHEgRc02w97ZXGXlyJP6xra9+QSNI8K --s3_bucket rit-canedge1
