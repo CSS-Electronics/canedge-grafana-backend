@@ -188,7 +188,7 @@ Replacing `device_name` for `device` displays only the device ID. If you want to
 
 #### Set up Grafana Annotations 
 
-Annotations can be used to display when a new log file 'session' or 'split' occurs, as well as display the log file name. This makes it easy to identify the log files behind a specific time period - and then finding these via [CANcloud](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/cancloud-intro/) or [TntDrive](https://canlogger.csselectronics.com/canedge-getting-started/transfer-data/server-tools/other-s3-tools/) for further processing.
+Annotations can be used to display when a new log file 'session' or 'split' occurs, as well as display the log file name. This makes it easy to identify the log files behind a specific time period - and then finding these via [CANcloud](https://canlogger.csselectronics.com/canedge-getting-started/ce2/transfer-data/server-tools/cancloud-intro/) or [TntDrive](https://canlogger.csselectronics.com/canedge-getting-started/ce2/transfer-data/server-tools/other-s3-tools/) for further processing.
 
 
 #### Regarding performance & stability
