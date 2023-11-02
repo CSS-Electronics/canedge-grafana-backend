@@ -1,10 +1,10 @@
-# CANedge Grafana Backend - Visualize CAN/LIN Data in Dashboards
+# Grafana-Backend - Visualize CANedge CAN/LIN Data in Dashboards [LEGACY]
+
+**This project is now LEGACY and not supported - we recommend using one of our other dashboard integrations**
 
 This project enables easy dashboard visualization of log files from the [CANedge](https://www.csselectronics.com/pages/can-bus-hardware-products) CAN/LIN data logger. 
 
 Specifically, a light-weight backend app loads, DBC decodes and parses MDF log files from local disk or an S3 server. This is done 'on demand' in response to query requests sent from a [Grafana dashboard](https://grafana.com/) frontend by end users. 
-
-**This project is currently in BETA - major changes will be made.**
 
 ![CAN Bus Grafana Dashboard](https://canlogger1000.csselectronics.com/img/can-bus-telematics-dashboard-template_v2.jpg)
 
