@@ -1,6 +1,6 @@
 # Grafana-Backend - Visualize CANedge CAN/LIN Data in Dashboards [LEGACY]
 
-**This project is now LEGACY and not supported - we recommend using one of our other dashboard integrations**
+**This project is now LEGACY and not supported - we recommend using our [Grafana-Athena](https://www.csselectronics.com/pages/telematics-dashboard-open-source) integration.**
 
 This project enables easy dashboard visualization of log files from the [CANedge](https://www.csselectronics.com/pages/can-bus-hardware-products) CAN/LIN data logger. 
 
